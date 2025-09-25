@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 20px system-ui; fill: #0b1220; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .muted { font: 12px system-ui; fill: #6b7280; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .edge2 { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+      .ok { fill: #16a34a; }
+      .warn { fill: #d97706; }
+      .err { fill: #dc2626; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="720"/>
+  <text class="title" x="40" y="56">Hybrid Auth Flow (Legacy + Bcrypt with Auto-Upgrade)</text>
+
+  <!-- Client -->
+  <rect class="card" x="60" y="100" width="300" height="120"/>
+  <text class="text" x="80" y="140">Client submits username/password</text>
+  <text class="muted" x="80" y="170">POST /users/auth</text>
+
+  <!-- Legacy check -->
+  <rect class="card" x="420" y="80" width="360" height="120"/>
+  <text class="text" x="440" y="120">1) Legacy plaintext match</text>
+  <text class="muted" x="440" y="145">findOne({ username, password })</text>
+
+  <!-- Bcrypt check -->
+  <rect class="card" x="420" y="240" width="360" height="140"/>
+  <text class="text" x="440" y="280">2) Hash check by username</text>
+  <text class="muted" x="440" y="305">findOne({ username }) + bcrypt.compare</text>
+
+  <!-- Upgrade -->
+  <rect class="card" x="820" y="80" width="360" height="120"/>
+  <text class="text" x="840" y="120">Auto-upgrade plaintext → bcrypt</text>
+  <text class="muted" x="840" y="145">updateOne({ password: hash(password) })</text>
+
+  <!-- Result -->
+  <rect class="card" x="820" y="260" width="360" height="120"/>
+  <text class="text" x="840" y="300">Issue session (regenerate + set user)</text>
+
+  <!-- Lines -->
+  <path class="edge" d="M360,160 C390,160 420,140 420,140"/>
+  <path class="edge2" d="M600,200 C600,220 600,240 600,240"/>
+  <path class="edge" d="M780,140 C800,140 820,140 820,140"/>
+  <path class="edge" d="M600,310 C700,310 780,320 820,320"/>
+
+  <!-- Notes -->
+  <text class="muted" x="60" y="260">Small fixed delay on failure (~250ms) to slow brute-force.</text>
+  <text class="muted" x="60" y="290">Optional login rate limiting: AUTH_RATE_LIMIT_ENABLED=true</text>
+</svg>

@@ -1,0 +1,23 @@
+.notifications-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 350px;
+}
+
+.notification-toast {
+  margin-bottom: 10px;
+  border-left: 4px solid #007bff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notification-toast .toast-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.notification-toast .toast-body {
+  background-color: white;
+  word-wrap: break-word;
+}

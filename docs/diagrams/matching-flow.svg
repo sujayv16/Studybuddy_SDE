@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 22px system-ui; fill: #0b1220; }
+      .subtitle { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .edge2 { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1280" height="760"/>
+  <text class="title" x="40" y="56">Matching Flow</text>
+
+  <rect class="card" x="60" y="120" width="340" height="520"/>
+  <text class="subtitle" x="80" y="150">Frontend</text>
+  <text class="text" x="80" y="180">- User sets preferences</text>
+  <text class="text" x="80" y="205">- Triggers /match/search</text>
+
+  <rect class="card" x="460" y="120" width="360" height="520"/>
+  <text class="subtitle" x="480" y="150">Backend</text>
+  <text class="text" x="480" y="180">- Validate inputs</text>
+  <text class="text" x="480" y="205">- Query users by courses/availability</text>
+  <text class="text" x="480" y="230">- Compute compatibility scores</text>
+  <text class="text" x="480" y="255">- Persist to Match model</text>
+  <text class="text" x="480" y="280">- Return sorted list</text>
+
+  <rect class="card" x="860" y="120" width="360" height="200"/>
+  <text class="subtitle" x="880" y="150">MongoDB</text>
+  <text class="text" x="880" y="180">- users, matches collections</text>
+
+  <path class="edge" d="M400,220 C460,220 460,220 460,220"/>
+  <text class="text" x="300" y="210">GET /match/search</text>
+
+  <path class="edge" d="M820,260 C860,260 860,260 860,260"/>
+  <text class="text" x="780" y="250">read users</text>
+
+  <path class="edge2" d="M820,300 C860,300 860,300 860,300"/>
+  <text class="text" x="780" y="290">write matches</text>
+
+  <path class="edge2" d="M460,340 C400,340 400,340 400,340"/>
+  <text class="text" x="300" y="330">return matches[]</text>
+
+</svg>

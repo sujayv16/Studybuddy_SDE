@@ -1,0 +1,290 @@
+/* BuddyProfile.css */
+.profile-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.profile-card {
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  animation: slideInUp 0.8s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.profile-header {
+  text-align: center;
+  padding: 30px 0;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  margin: -20px -20px 30px -20px;
+  border-radius: 20px 20px 0 0;
+}
+
+.profile-image-large {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.profile-image-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.profile-image-large:hover img {
+  transform: scale(1.1);
+}
+
+.profile-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 5px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.profile-university {
+  font-size: 1.1rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.section-title {
+  color: #2c3e50;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid transparent;
+  background: linear-gradient(45deg, #667eea, #764ba2) padding-box,
+              linear-gradient(45deg, #667eea, #764ba2) border-box;
+  border-image: linear-gradient(45deg, #667eea, #764ba2) 1;
+}
+
+.courses-section {
+  margin-bottom: 30px;
+}
+
+.courses-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.course-badge-large {
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-weight: 600;
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.course-badge-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.bio-section {
+  margin-bottom: 30px;
+}
+
+.bio-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #495057;
+  text-align: center;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.05);
+  border-radius: 15px;
+  border-left: 4px solid #667eea;
+  margin: 0;
+}
+
+.reviews-section {
+  margin-bottom: 30px;
+}
+
+.reviews-carousel {
+  background: rgba(118, 75, 162, 0.05);
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid rgba(118, 75, 162, 0.2);
+}
+
+.review-card {
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  margin: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  position: relative;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-content {
+  text-align: center;
+  position: relative;
+}
+
+.quote-icon {
+  font-size: 2rem;
+  color: #667eea;
+  opacity: 0.3;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+}
+
+.review-text {
+  font-style: italic;
+  color: #495057;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 10px 0 0 0;
+  padding: 0 20px;
+}
+
+.carousel-arrow.next {
+  right: 10px;
+  color: #667eea !important;
+}
+
+.carousel-arrow.prev {
+  left: 10px;
+  color: #667eea !important;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.carousel-arrow:hover {
+  background-color: white;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.action-buttons {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.back-button {
+  background: linear-gradient(45deg, #6c757d, #495057);
+  border: none;
+  border-radius: 15px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+  background: linear-gradient(45deg, #495057, #343a40);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 20px 10px;
+  }
+  
+  .profile-name {
+    font-size: 1.5rem;
+  }
+  
+  .profile-university {
+    font-size: 1rem;
+  }
+  
+  .profile-image-large {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .courses-grid {
+    justify-content: center;
+  }
+  
+  .course-badge-large {
+    font-size: 0.8rem;
+    padding: 10px 16px;
+  }
+  
+  .bio-content {
+    font-size: 1rem;
+    padding: 15px;
+  }
+  
+  .review-text {
+    font-size: 0.9rem;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .profile-header {
+    padding: 20px 0;
+  }
+  
+  .profile-name {
+    font-size: 1.3rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .courses-grid {
+    gap: 8px;
+  }
+  
+  .course-badge-large {
+    font-size: 0.75rem;
+    padding: 8px 12px;
+  }
+}

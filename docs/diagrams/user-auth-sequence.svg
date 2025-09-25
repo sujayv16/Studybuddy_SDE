@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="860" viewBox="0 0 1280 860">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .lane { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 8; }
+      .title { font: 700 22px system-ui; fill: #0b1220; }
+      .actor { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .reply { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1280" height="860"/>
+  <text class="title" x="40" y="56">User Signup & Login Sequence</text>
+
+  <!-- Lanes -->
+  <rect class="lane" x="60" y="100" width="260" height="720"/>
+  <text class="actor" x="80" y="130">User (Browser)</text>
+
+  <rect class="lane" x="380" y="100" width="300" height="720"/>
+  <text class="actor" x="400" y="130">Frontend (React)</text>
+
+  <rect class="lane" x="720" y="100" width="300" height="720"/>
+  <text class="actor" x="740" y="130">Backend (Express)</text>
+
+  <rect class="lane" x="1040" y="100" width="180" height="720"/>
+  <text class="actor" x="1060" y="130">MongoDB</text>
+
+  <!-- Signup -->
+  <text class="text" x="60" y="170">Signup Flow</text>
+  <path class="edge" d="M200,190 C380,190 380,190 380,190"/>
+  <text class="text" x="220" y="180">Fill form</text>
+
+  <path class="edge" d="M530,220 C720,220 720,220 720,220"/>
+  <text class="text" x="560" y="210">POST /users/signup</text>
+
+  <path class="edge" d="M870,250 C1040,250 1040,250 1040,250"/>
+  <text class="text" x="900" y="240">Insert user (bcrypt)</text>
+
+  <path class="reply" d="M1040,280 C870,280 870,280 870,280"/>
+  <text class="text" x="900" y="300">OK</text>
+
+  <path class="reply" d="M720,310 C530,310 530,310 530,310"/>
+  <text class="text" x="580" y="330">201 Created</text>
+
+  <!-- Login -->
+  <text class="text" x="60" y="380">Login Flow (hybrid, auto-upgrade)</text>
+  <path class="edge" d="M200,400 C380,400 380,400 380,400"/>
+  <text class="text" x="220" y="390">Enter credentials</text>
+
+  <path class="edge" d="M530,430 C720,430 720,430 720,430"/>
+  <text class="text" x="560" y="420">POST /users/auth</text>
+
+  <path class="edge" d="M870,460 C1040,460 1040,460 1040,460"/>
+  <text class="text" x="900" y="450">Find user by username</text>
+
+  <path class="edge" d="M1040,490 C870,490 870,490 870,490"/>
+  <text class="text" x="890" y="510">Compare plaintext OR bcrypt</text>
+
+  <path class="edge" d="M870,540 C1040,540 1040,540 1040,540"/>
+  <text class="text" x="900" y="530">If plaintext success → update to bcrypt</text>
+
+  <path class="reply" d="M720,580 C530,580 530,580 530,580"/>
+  <text class="text" x="560" y="600">Session established</text>
+
+  <path class="reply" d="M380,610 C200,610 200,610 200,610"/>
+  <text class="text" x="230" y="630">Redirect to app</text>
+</svg>

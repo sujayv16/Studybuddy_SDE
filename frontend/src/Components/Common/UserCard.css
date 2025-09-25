@@ -1,0 +1,187 @@
+/* UserCard.css */
+.user-card {
+  border: none;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.user-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
+}
+
+.user-card .card-body {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border-radius: 15px;
+  margin: 8px;
+  padding: 20px;
+}
+
+.profile-image-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  object-fit: cover;
+}
+
+.availability-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.availability-dot {
+  width: 12px;
+  height: 12px;
+  background: #28a745;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+.user-info .card-title {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.user-info .card-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.availability-badge {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+}
+
+.courses-section {
+  border-top: 1px solid #e9ecef;
+  padding-top: 15px;
+}
+
+.courses-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.courses-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.course-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.bio-section {
+  border-top: 1px solid #e9ecef;
+  padding-top: 15px;
+}
+
+.bio-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #6c757d;
+  margin: 0;
+}
+
+.card-actions {
+  border-top: 1px solid #e9ecef;
+  padding-top: 15px;
+}
+
+.card-actions .btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.card-actions .btn:hover {
+  transform: translateY(-1px);
+}
+
+.card-actions .btn-outline-primary:hover {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-color: transparent;
+}
+
+.card-actions .btn-success:hover {
+  background: linear-gradient(45deg, #28a745, #20c997);
+}
+
+.card-actions .btn-danger:hover {
+  background: linear-gradient(45deg, #dc3545, #e83e8c);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .user-card {
+    margin-bottom: 15px;
+  }
+  
+  .user-card .card-body {
+    padding: 15px;
+  }
+  
+  .profile-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .user-info .card-title {
+    font-size: 1rem;
+  }
+}
+
+/* Card grid layout */
+.user-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
+}
+
+@media (max-width: 576px) {
+  .user-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}

@@ -1,0 +1,251 @@
+/* Scheduling.css */
+.scheduling-container {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.scheduling-title {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sessions-card, .availability-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.sessions-card .card-header, .availability-card .card-header {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 15px 15px 0 0;
+  padding: 20px;
+}
+
+.session-card {
+  border: 1px solid #e3f2fd;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  border-color: #2196f3;
+}
+
+.session-card .card-body {
+  padding: 20px;
+}
+
+.participants-section .badge {
+  margin: 2px;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+
+.day-availability {
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.day-availability:last-child {
+  border-bottom: none;
+}
+
+.day-availability .badge {
+  font-size: 0.7rem;
+  margin: 2px;
+  padding: 4px 8px;
+}
+
+/* Modal Enhancements */
+.modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 15px 15px 0 0;
+}
+
+.modal-body {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.form-control, .form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 12px 15px;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: #667eea;
+  border-color: #667eea;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline-primary {
+  color: #667eea;
+  border-color: #667eea;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  border-color: transparent;
+}
+
+.btn-success {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  border: none;
+  border-radius: 8px;
+}
+
+.btn-outline-danger {
+  border-radius: 8px;
+}
+
+.btn-secondary {
+  border-radius: 10px;
+}
+
+.btn-outline-info {
+  border-radius: 10px;
+  color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+/* Badge Styling */
+.badge {
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 15px;
+}
+
+.bg-success {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(45deg, #ffc107, #fd7e14) !important;
+  color: #212529 !important;
+}
+
+.bg-danger {
+  background: linear-gradient(45deg, #dc3545, #e83e8c) !important;
+}
+
+.bg-info {
+  background: linear-gradient(45deg, #17a2b8, #6f42c1) !important;
+}
+
+/* Alert Styling */
+.alert-info {
+  background: rgba(23, 162, 184, 0.1);
+  border: 1px solid rgba(23, 162, 184, 0.3);
+  border-radius: 12px;
+  color: #0c5460;
+}
+
+.alert-info .badge {
+  background: #17a2b8 !important;
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.alert-info .badge:hover {
+  background: #138496 !important;
+  transform: scale(1.05);
+}
+
+/* Animation for session cards */
+.session-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .scheduling-container {
+    padding: 20px 10px;
+  }
+  
+  .scheduling-title {
+    font-size: 1.8rem;
+  }
+  
+  .sessions-card .card-header, .availability-card .card-header {
+    padding: 15px;
+  }
+  
+  .session-card .card-body {
+    padding: 15px;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .d-flex.justify-content-between > div {
+    display: flex;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .step { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 22px system-ui; fill: #0b1220; }
+      .subtitle { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1280" height="720"/>
+  <text class="title" x="40" y="56">Express Middleware Pipeline</text>
+
+  <rect class="step" x="80" y="120" width="260" height="80"/>
+  <text class="subtitle" x="100" y="165">helmet()</text>
+
+  <rect class="step" x="380" y="120" width="260" height="80"/>
+  <text class="subtitle" x="400" y="165">cors({ credentials })</text>
+
+  <rect class="step" x="680" y="120" width="260" height="80"/>
+  <text class="subtitle" x="700" y="165">session()</text>
+
+  <rect class="step" x="980" y="120" width="260" height="80"/>
+  <text class="subtitle" x="1000" y="165">requestId()</text>
+
+  <rect class="step" x="80" y="260" width="260" height="80"/>
+  <text class="subtitle" x="100" y="305">morgan(logger)</text>
+
+  <rect class="step" x="380" y="260" width="260" height="80"/>
+  <text class="subtitle" x="400" y="305">rateLimit (optional)</text>
+
+  <rect class="step" x="680" y="260" width="260" height="80"/>
+  <text class="subtitle" x="700" y="305">routers</text>
+  <text class="text" x="700" y="330">/users /chat /match /scheduling</text>
+
+  <rect class="step" x="980" y="260" width="260" height="80"/>
+  <text class="subtitle" x="1000" y="305">/metrics</text>
+
+  <path class="edge" d="M340,160 C360,160 380,160 380,160"/>
+  <path class="edge" d="M640,160 C660,160 680,160 680,160"/>
+  <path class="edge" d="M940,160 C960,160 980,160 980,160"/>
+  <path class="edge" d="M340,300 C360,300 380,300 380,300"/>
+  <path class="edge" d="M640,300 C660,300 680,300 680,300"/>
+  <path class="edge" d="M940,300 C960,300 980,300 980,300"/>
+</svg>

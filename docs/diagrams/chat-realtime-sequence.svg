@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="820" viewBox="0 0 1280 820">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .lane { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 8; }
+      .title { font: 700 22px system-ui; fill: #0b1220; }
+      .actor { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .broadcast { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1280" height="820"/>
+  <text class="title" x="40" y="56">Chat Real‑time Sequence (Socket.IO)</text>
+
+  <rect class="lane" x="60" y="100" width="260" height="680"/>
+  <text class="actor" x="80" y="130">User A (Browser)</text>
+
+  <rect class="lane" x="360" y="100" width="260" height="680"/>
+  <text class="actor" x="380" y="130">Frontend (React)</text>
+
+  <rect class="lane" x="660" y="100" width="300" height="680"/>
+  <text class="actor" x="680" y="130">Socket.IO Server</text>
+
+  <rect class="lane" x="1000" y="100" width="220" height="680"/>
+  <text class="actor" x="1020" y="130">MongoDB</text>
+
+  <text class="text" x="60" y="180">Connect</text>
+  <path class="edge" d="M190,200 C360,200 360,200 360,200"/>
+  <path class="edge" d="M490,230 C660,230 660,230 660,230"/>
+  <text class="text" x="520" y="220">socket.connect()</text>
+
+  <text class="text" x="60" y="270">Join chatroom</text>
+  <path class="edge" d="M190,290 C360,290 360,290 360,290"/>
+  <path class="edge" d="M490,320 C660,320 660,320 660,320"/>
+  <text class="text" x="520" y="310">emit('join', roomId)</text>
+
+  <path class="edge" d="M840,350 C1000,350 1000,350 1000,350"/>
+  <text class="text" x="860" y="340">fetch chatroom + history</text>
+
+  <path class="edge" d="M1000,380 C840,380 840,380 840,380"/>
+  <text class="text" x="860" y="400">ack history</text>
+
+  <text class="text" x="60" y="440">Send message</text>
+  <path class="edge" d="M190,460 C360,460 360,460 360,460"/>
+  <path class="edge" d="M490,490 C660,490 660,490 660,490"/>
+  <text class="text" x="520" y="480">emit('message', payload)</text>
+
+  <path class="edge" d="M840,520 C1000,520 1000,520 1000,520"/>
+  <text class="text" x="860" y="510">persist message</text>
+
+  <path class="broadcast" d="M660,550 C490,600 260,600 60,600"/>
+  <text class="text" x="310" y="630">broadcast to room</text>
+
+  <text class="text" x="60" y="670">Receive and render</text>
+
+</svg>
