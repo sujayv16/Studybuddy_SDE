@@ -19,4 +19,4 @@ All diagrams use the project light blue theme and are exported as SVG for easy z
 - observability.svg — Health, readiness, status, metrics
 - security-components.svg — Major security controls and where they live
 
-Tip: You can open any of these directly in VS Code to zoom or annotate in PR reviews.
+
