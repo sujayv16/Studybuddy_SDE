@@ -12,12 +12,6 @@ Repository: https://github.com/sujayv16/Studybuddy_SDE
 - Session‑based authentication (MongoDB session store)
 - Observability: health/readiness/status pages, Prometheus metrics, structured logs with request IDs
 
-See `docs/diagrams/` for all diagrams. Start with:
-- `docs/diagrams/system-overview.svg` — big picture
-- `docs/diagrams/client-server-spa.svg` — client–server SPA pattern
-- `docs/diagrams/layered-architecture.svg` — backend layers
-- `docs/diagrams/data-model.svg` — Mongoose entities and relations
-
 ## ✅ Functional Requirements (condensed)
 
 - Account management: signup, login, logout, profile edit, avatar upload
