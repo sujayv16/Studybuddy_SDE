@@ -4,6 +4,13 @@ Connect university students with the right study partners, schedule meetups, and
 
 Repository: https://github.com/sujayv16/Studybuddy_SDE
 
+
+## 🎥 Demo
+
+Watch the recorded demo:
+- Google Drive: https://drive.google.com/file/d/193teUlm1GMFlENdK2VaMK_Jj61pgyQVh/view?usp=sharing
+
+
 ## 🔭 System Overview
 
 - Single Page Application (React + TypeScript) served during development by CRA and in production via the backend `build/` directory
