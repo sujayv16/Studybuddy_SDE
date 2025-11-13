@@ -11,3 +11,201 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+:root {
+  /* Semantic color tokens - LIGHT theme (defaults) */
+  /* Page background: subtle cool gray to lift white surfaces */
+  --bg: #eef3f8; /* soft neutral page background */
+  --surface: #ffffff; /* primary surface (modals, form surfaces) */
+  --card-bg: #f8fbff; /* card/container surface — distinct from page bg */
+  --text: #0b1220; /* dark, professional body text */
+  --muted: #556172; /* secondary text */
+  --primary: #1f4bb6; /* professional indigo/blue */
+  --primary-600: #153a8a; /* darker primary */
+  --border: #dde7f3; /* subtle blue-tinted borders */
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --elevation-1: 0 6px 14px rgba(16,24,40,0.06);
+  --app-font-size: 16px;
+  color-scheme: light;
+}
+
+.theme-dark {
+  /* DARK theme overrides */
+  /* make page background darker and surfaces slightly lighter so cards stand out */
+  --bg: #061122; /* very dark navy */
+  --surface: #0f2333; /* slightly lighter card surface in dark */
+  --text: #e6eef8; /* light text */
+  --muted: #9aa9bf; /* muted text */
+  --primary: #4f9cff; /* slightly lighter primary in dark */
+  --primary-600: #2563eb;
+  --border: rgba(255,255,255,0.06);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --card-bg: #0f1724;
+  --elevation-1: 0 6px 16px rgba(2,6,23,0.6);
+  color-scheme: dark;
+}
+
+.high-contrast {
+  --app-bg: #000000 !important;
+  --app-text: #ffffff !important;
+  --app-accent: #ffff00 !important;
+}
+
+html, body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: var(--app-font-size);
+}
+
+/* image alt overlay (optional) */
+.show-image-alt img[data-alt] { position: relative; }
+.show-image-alt img[data-alt]::after {
+  content: attr(data-alt);
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+/* reduced motion */
+.reduced-motion *, .reduced-motion *::before, .reduced-motion *::after { transition: none !important; animation: none !important; }
+
+/* Accessibility helpers */
+.high-contrast { filter: none; }
+
+/* Prefer user OS theme when no explicit class is set */
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light):not(.theme-dark) {
+    --bg: #0b1220;
+    --surface: #0f1724;
+    --text: #e6eef8;
+    --muted: #9aa9bf;
+    --primary: #4f9cff;
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not(.theme-dark):not(.theme-light) {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --text: #0f1724;
+    --muted: #6b7280;
+    --primary: #2563eb;
+    color-scheme: light;
+  }
+}
+
+/* Stronger element-level overrides to ensure Bootstrap components follow tokens */
+/* Page surfaces vs. card surfaces
+   - `--surface` remains the primary white surface used for modals and forms
+   - `--card-bg` is a slightly different tone used for cards/list items to improve contrast */
+html, body, .page { background-color: var(--bg) !important; color: var(--text) !important; }
+.surface, .modal-content, .form-control, .form-select { background-color: var(--surface) !important; color: var(--text) !important; }
+.card, .list-group-item { background-color: var(--card-bg) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+/* Navbar should use surface and border tokens */
+.navbar, .navbar-light, .navbar-dark {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(180deg, var(--primary), var(--primary-600)) !important;
+  color: white !important;
+  border: none !important;
+}
+.btn-outline-primary { border-color: var(--primary) !important; color: var(--primary) !important; }
+.btn-outline-secondary { border-color: var(--border) !important; color: var(--text) !important; background: transparent !important; }
+.btn-outline-secondary:hover { background: var(--card-bg) !important; color: var(--text) !important; }
+
+/* Theme toggle button (token-driven) */
+.theme-toggle-btn {
+  border-radius: 999px !important;
+  padding: .28rem .7rem !important;
+  box-shadow: var(--elevation-1) !important;
+  background: var(--primary) !important;
+  color: var(--surface) !important;
+  border: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .4rem !important;
+}
+.theme-toggle-btn:hover {
+  background: var(--primary-600) !important;
+  color: var(--surface) !important;
+}
+
+/* Make Bootstrap switches (form-check type=switch) clearly visible in both themes */
+.form-check.form-switch .form-check-input {
+  width: 48px;
+  height: 26px;
+  background-color: var(--border) !important;
+  border-radius: 999px;
+  position: relative;
+  transition: background-color .18s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none !important;
+  border: none !important;
+}
+.form-check.form-switch .form-check-input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--surface) !important;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transition: transform .18s ease;
+}
+.form-check.form-switch .form-check-input:checked {
+  background-color: var(--primary) !important;
+}
+.form-check.form-switch .form-check-input:checked::after {
+  transform: translateX(22px);
+}
+
+/* Emphasize the label when the switch is on */
+.form-check.form-switch .form-check-input:checked + .form-check-label {
+  color: var(--primary) !important;
+  font-weight: 600;
+}
+
+/* Forms */
+.form-control, .form-select, input, textarea {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Lists & panels */
+.list-group-item, .card, .surface { background: var(--surface) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+/* Muted text */
+.text-muted, .muted { color: var(--muted) !important; }
+
+/* Links */
+a { color: var(--primary) !important; }
+a:hover { color: var(--primary-600) !important; }
+
+/* Modal backdrop and overlay specifics (dark surfaces) */
+.modal-content { background: var(--surface) !important; color: var(--text) !important; }
+
+/* Ensure scrollbars and UA controls reflect color-scheme when possible */
+html.theme-dark, :root.theme-dark { color-scheme: dark; }
+html.theme-light, :root.theme-light { color-scheme: light; }
+

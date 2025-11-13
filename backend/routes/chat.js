@@ -1,13 +1,13 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../user.model");
-const Match = require("../match.model");
-const Chatroom = require("../chatroom.model");
-const Message = require("../message.model");
-const uuid = require("uuid");
+const User = require('../user.model');
+const Match = require('../match.model');
+const Chatroom = require('../chatroom.model');
+const Message = require('../message.model');
+const uuid = require('uuid');
 
 // Retrieve all current user's chatrooms
-router.get("/", async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -20,10 +20,10 @@ router.get("/", async (req, res, next) => {
   res.json(chatrooms);
 });
 
-router.post("/time-update", (req, res)=>{
-  const {time, id} = req.body;
-  const filter = { id: id};
-  console.log(id)
+router.post('/time-update', (req, res) => {
+  const { time, id } = req.body;
+  const filter = { id: id };
+  console.log(id);
   const update = {
     $set: { meetTime: time },
   };
@@ -33,15 +33,15 @@ router.post("/time-update", (req, res)=>{
       return;
     }
 
-    console.log("Updated time");
+    console.log('Updated time');
     console.log(result);
   });
 
   res.sendStatus(200);
-})
+});
 
 // Create a new group chatroom (should be linked to a form)
-router.post("/new-group", async (req, res, next) => {
+router.post('/new-group', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -62,7 +62,7 @@ router.post("/new-group", async (req, res, next) => {
   let chatroom = new Chatroom({
     id: chatId,
     title: chatTitle,
-    type: "group",
+    type: 'group',
     users: chatBuddies,
   });
 
@@ -78,7 +78,7 @@ router.post("/new-group", async (req, res, next) => {
 });
 
 // Retrieve all messages from a given chatroom
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -105,7 +105,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 // Add a user to a group chat
-router.post("/add-user/:id", async (req, res, next) => {
+router.post('/add-user/:id', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -149,7 +149,7 @@ router.post("/add-user/:id", async (req, res, next) => {
 });
 
 // Leave a group chat
-router.delete("/leave/:id", async (req, res, next) => {
+router.delete('/leave/:id', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -181,7 +181,7 @@ router.delete("/leave/:id", async (req, res, next) => {
 });
 
 // Retrieve all users for a chatroom
-router.get("/:id/users", async (req, res, next) => {
+router.get('/:id/users', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);

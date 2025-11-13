@@ -1,7 +1,7 @@
 /* WeeklyAvailability.css */
 
 .weekly-availability-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--primary), var(--primary-600));
   color: white;
   border-bottom: none;
 }
@@ -26,14 +26,14 @@
 }
 
 .add-slot-card {
-  border: 2px dashed #dee2e6;
-  background-color: #f8f9fa;
+  border: 2px dashed var(--border);
+  background-color: var(--surface);
   transition: all 0.3s ease;
 }
 
 .add-slot-card:hover {
-  border-color: #007bff;
-  background-color: #e3f2fd;
+  border-color: var(--primary);
+  background-color: var(--bg);
 }
 
 .time-slots-grid {
@@ -52,13 +52,13 @@
 }
 
 .time-slot-card.available {
-  border-color: #28a745;
-  background: linear-gradient(135deg, #d4edda, #c3e6cb);
+  border-color: var(--success);
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(34,197,94,0.03));
 }
 
 .time-slot-card.unavailable {
-  border-color: #dc3545;
-  background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+  border-color: var(--danger);
+  background: linear-gradient(135deg, rgba(220,53,69,0.06), rgba(220,53,69,0.02));
 }
 
 .time-slot-card:hover {
@@ -71,7 +71,7 @@
 }
 
 .weekly-overview {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, var(--primary), var(--primary-600));
   color: white;
   border: none;
 }
@@ -123,22 +123,19 @@
 
 .time-slots-grid::-webkit-scrollbar-track,
 .day-selector::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--bg);
   border-radius: 3px;
 }
-
 .time-slots-grid::-webkit-scrollbar-thumb,
 .day-selector::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--muted);
   border-radius: 3px;
 }
-
 .time-slots-grid::-webkit-scrollbar-thumb:hover,
 .day-selector::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(0,0,0,0.25);
 }
 
-/* Animation for adding slots */
 @keyframes slideInFromRight {
   from {
     opacity: 0;

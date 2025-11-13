@@ -6,3 +6,17 @@
 .gm-style-moc {
     height: unset !important;
 }
+
+.studybuddy-info {
+    /* match card-like placeholders */
+    box-shadow: var(--elevation-1);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-align: center;
+}
+
+.studybuddy-info ul { text-align: left; display: inline-block; }

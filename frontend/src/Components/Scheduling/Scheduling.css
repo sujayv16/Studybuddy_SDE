@@ -1,12 +1,12 @@
-/* Scheduling.css */
+/* Scheduling.css (cleaned and tokenized) */
 .scheduling-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, var(--bg), color-mix(in srgb, var(--bg) 80%, var(--surface) 20%));
   min-height: 100vh;
   padding: 40px 20px;
 }
 
 .scheduling-title {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -17,13 +17,13 @@
 .sessions-card, .availability-card {
   border: none;
   border-radius: 15px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  box-shadow: var(--elevation-1);
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface) 95%, transparent 5%);
 }
 
 .sessions-card .card-header, .availability-card .card-header {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   color: white;
   border: none;
   border-radius: 15px 15px 0 0;
@@ -31,16 +31,16 @@
 }
 
 .session-card {
-  border: 1px solid #e3f2fd;
+  border: 1px solid var(--border);
   border-radius: 12px;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--surface) 92%, black 8%);
 }
 
 .session-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  border-color: #2196f3;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  border-color: var(--primary);
 }
 
 .session-card .card-body {
@@ -56,7 +56,7 @@
 
 .day-availability {
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .day-availability:last-child {
@@ -73,11 +73,11 @@
 .modal-content {
   border: none;
   border-radius: 15px;
-  box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 50px rgba(0,0,0,0.25);
 }
 
 .modal-header {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   color: white;
   border: none;
   border-radius: 15px 15px 0 0;
@@ -85,28 +85,28 @@
 
 .modal-body {
   padding: 30px;
-  background: rgba(255, 255, 255, 0.95);
+  background: color-mix(in srgb, var(--surface) 95%, transparent 5%);
 }
 
 .form-control, .form-select {
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--border);
   border-radius: 10px;
   padding: 12px 15px;
   transition: all 0.3s ease;
 }
 
 .form-control:focus, .form-select:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--primary) 25%, transparent 75%);
 }
 
 .form-check-input:checked {
-  background-color: #667eea;
-  border-color: #667eea;
+  background-color: var(--primary);
+  border-color: var(--primary);
 }
 
 .btn-primary {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   border: none;
   border-radius: 10px;
   padding: 10px 25px;
@@ -116,25 +116,27 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 5px 15px rgba(30,64,175,0.18);
 }
 
 .btn-outline-primary {
-  color: #667eea;
-  border-color: #667eea;
+  color: var(--primary);
+  border-color: var(--primary);
   border-radius: 10px;
-  font-weight: 600;
+  background: transparent;
 }
 
 .btn-outline-primary:hover {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   border-color: transparent;
+  color: white;
 }
 
 .btn-success {
-  background: linear-gradient(45deg, #28a745, #20c997);
+  background: linear-gradient(45deg, var(--success), color-mix(in srgb, var(--success) 85%, black 15%));
   border: none;
   border-radius: 8px;
+  color: white;
 }
 
 .btn-outline-danger {
@@ -147,11 +149,10 @@
 
 .btn-outline-info {
   border-radius: 10px;
-  color: #17a2b8;
-  border-color: #17a2b8;
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
-/* Badge Styling */
 .badge {
   font-weight: 500;
   padding: 8px 12px;
@@ -159,44 +160,32 @@
 }
 
 .bg-success {
-  background: linear-gradient(45deg, #28a745, #20c997) !important;
+  background: linear-gradient(45deg, var(--success), color-mix(in srgb, var(--success) 85%, black 15%)) !important;
 }
 
 .bg-warning {
-  background: linear-gradient(45deg, #ffc107, #fd7e14) !important;
-  color: #212529 !important;
-}
-
-.bg-danger {
-  background: linear-gradient(45deg, #dc3545, #e83e8c) !important;
+  background: linear-gradient(45deg, var(--warning), color-mix(in srgb, var(--warning) 85%, black 15%)) !important;
+  color: var(--text) !important;
 }
 
 .bg-info {
-  background: linear-gradient(45deg, #17a2b8, #6f42c1) !important;
+  background: linear-gradient(45deg, color-mix(in srgb, var(--primary) 60%, var(--muted) 40%), var(--primary-600)) !important;
 }
 
-/* Alert Styling */
 .alert-info {
-  background: rgba(23, 162, 184, 0.1);
-  border: 1px solid rgba(23, 162, 184, 0.3);
-  border-radius: 12px;
-  color: #0c5460;
+  background: color-mix(in srgb, var(--primary) 8%, var(--surface) 92%);
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent 86%);
+  color: var(--text);
 }
 
 .alert-info .badge {
-  background: #17a2b8 !important;
+  background: var(--primary) !important;
   color: white;
-  transition: all 0.2s ease;
-}
-
-.alert-info .badge:hover {
-  background: #138496 !important;
-  transform: scale(1.05);
 }
 
 /* Animation for session cards */
 .session-card {
-  animation: fadeInUp 0.6s ease-out;
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
 }
 
 @keyframes fadeInUp {
@@ -206,34 +195,35 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(30,64,175,0.18);
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .scheduling-container {
     padding: 20px 10px;
   }
-  
+
   .scheduling-title {
-    font-size: 1.8rem;
+    color: var(--primary);
   }
-  
+
   .sessions-card .card-header, .availability-card .card-header {
     padding: 15px;
+    background: linear-gradient(45deg, var(--success), color-mix(in srgb, var(--success) 80%, black 20%)) !important;
   }
-  
+
   .session-card .card-body {
     padding: 15px;
+    background: linear-gradient(45deg, var(--primary), var(--primary-600)) !important;
   }
-  
+
   .modal-body {
     padding: 20px;
-  }
-  
-  .btn {
-    padding: 8px 20px;
+    background: color-mix(in srgb, var(--primary) 6%, var(--surface) 94%);
+    border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent 88%);
+    border-radius: 12px;
+    color: var(--text);
     font-size: 0.9rem;
   }
 }
@@ -243,7 +233,7 @@
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .d-flex.justify-content-between > div {
     display: flex;
     gap: 10px;

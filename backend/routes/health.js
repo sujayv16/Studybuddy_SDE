@@ -2,11 +2,21 @@ const express = require('express');
 const os = require('os');
 const router = express.Router();
 const mongoose = require('mongoose');
+let redisPing = null;
+try {
+  const rc = require('../utils/redisClient');
+  redisPing = rc.ping;
+} catch (e) {
+  redisPing = null;
+}
 
 function dbState() {
   const state = mongoose.connection.readyState;
   // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
-  return ['disconnected', 'connected', 'connecting', 'disconnecting'][state] || 'unknown';
+  return (
+    ['disconnected', 'connected', 'connecting', 'disconnecting'][state] ||
+    'unknown'
+  );
 }
 
 function formatUptime(sec) {
@@ -20,11 +30,12 @@ function collectStatus() {
   const mem = process.memoryUsage();
   const cpuLoad = os.loadavg ? os.loadavg() : [];
   const db = dbState();
-  const status = db === 'connected' ? 'ok' : db === 'connecting' ? 'degraded' : 'down';
+  const status =
+    db === 'connected' ? 'ok' : db === 'connecting' ? 'degraded' : 'down';
   return {
     status,
     timestamp: new Date().toISOString(),
-  uptimeSec: Math.round(process.uptime()),
+    uptimeSec: Math.round(process.uptime()),
     node: {
       version: process.version,
       pid: process.pid,
@@ -44,6 +55,7 @@ function collectStatus() {
     },
     dependencies: {
       mongo: db,
+      redis: redisPing ? 'unknown' : 'not-configured',
     },
     request: {
       id: undefined, // filled at runtime if middleware sets req.requestId
@@ -57,11 +69,24 @@ router.get('/healthz', (req, res) => {
   payload.request.id = req.requestId;
   const accept = String(req.headers['accept'] || '').toLowerCase();
   if (accept.includes('text/html')) {
-    const color = payload.status === 'ok' ? '#16a34a' : payload.status === 'degraded' ? '#d97706' : '#dc2626';
+    const color =
+      payload.status === 'ok'
+        ? '#16a34a'
+        : payload.status === 'degraded'
+        ? '#d97706'
+        : '#dc2626';
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(`<!doctype html><meta charset="utf-8"/><style>body{margin:40px;font-family:system-ui;background:radial-gradient(1000px 700px at 10% -10%, #f2f7ff, #eaf2ff), radial-gradient(1000px 700px at 110% 110%, #ffffff, #f7fbff);color:#0b1220}.chip{display:inline-block;padding:4px 10px;border-radius:999px;background:${color}1a;border:1px solid ${color}55;color:${color};font-weight:600}</style><h1>Health</h1><p><span class="chip">${payload.status.toUpperCase()}</span></p><p>Uptime: ${formatUptime(payload.uptimeSec)}</p><p>Timestamp: ${payload.timestamp}</p>`);
+    res.send(
+      `<!doctype html><meta charset="utf-8"/><style>body{margin:40px;font-family:system-ui;background:radial-gradient(1000px 700px at 10% -10%, #f2f7ff, #eaf2ff), radial-gradient(1000px 700px at 110% 110%, #ffffff, #f7fbff);color:#0b1220}.chip{display:inline-block;padding:4px 10px;border-radius:999px;background:${color}1a;border:1px solid ${color}55;color:${color};font-weight:600}</style><h1>Health</h1><p><span class="chip">${payload.status.toUpperCase()}</span></p><p>Uptime: ${formatUptime(
+        payload.uptimeSec
+      )}</p><p>Timestamp: ${payload.timestamp}</p>`
+    );
   } else {
-    res.json({ status: payload.status === 'down' ? 'degraded' : 'ok', uptimeSec: payload.uptimeSec, timestamp: payload.timestamp });
+    res.json({
+      status: payload.status === 'down' ? 'degraded' : 'ok',
+      uptimeSec: payload.uptimeSec,
+      timestamp: payload.timestamp,
+    });
   }
 });
 
@@ -69,28 +94,86 @@ router.get('/healthz', (req, res) => {
 router.get('/readyz', (req, res) => {
   const payload = collectStatus();
   payload.request.id = req.requestId;
-  const code = payload.status === 'ok' ? 200 : payload.status === 'degraded' ? 200 : 503;
-  const accept = String(req.headers['accept'] || '').toLowerCase();
-  if (accept.includes('text/html')) {
-    const color = payload.status === 'ok' ? '#16a34a' : payload.status === 'degraded' ? '#d97706' : '#dc2626';
-    const fmt = (n) => `${(n/1024/1024).toFixed(1)} MB`;
-    res.status(code).setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(`<!doctype html><meta charset="utf-8"/><style>body{margin:40px;font-family:system-ui;background:radial-gradient(1000px 700px at 10% -10%, #f2f7ff, #eaf2ff), radial-gradient(1000px 700px at 110% 110%, #ffffff, #f7fbff);color:#0b1220}table{border-collapse:collapse}td{padding:6px 10px;border-bottom:1px dashed #dbe7ff}.chip{display:inline-block;padding:4px 10px;border-radius:999px;background:${color}1a;border:1px solid ${color}55;color:${color};font-weight:600}</style><h1>Readiness</h1><p><span class="chip">${payload.status.toUpperCase()}</span></p><p>Timestamp: ${payload.timestamp} &middot; Uptime: ${formatUptime(payload.uptimeSec)}</p><h3>Node</h3><table><tr><td>Version</td><td>${payload.node.version}</td></tr><tr><td>PID</td><td>${payload.node.pid}</td></tr><tr><td>Platform</td><td>${payload.node.platform} ${payload.node.arch}</td></tr><tr><td>RSS</td><td>${fmt(payload.node.memory.rss)}</td></tr><tr><td>Heap Used</td><td>${fmt(payload.node.memory.heapUsed)} / ${fmt(payload.node.memory.heapTotal)}</td></tr></table><h3>Dependencies</h3><table><tr><td>MongoDB</td><td>${payload.dependencies.mongo}</td></tr></table>`);
-  } else {
-    res.status(code).json(payload);
-  }
+  // If redis is configured, include its readiness in the code decision
+  const checkRedis = async () => {
+    if (!redisPing)
+      return payload.status === 'ok'
+        ? 200
+        : payload.status === 'degraded'
+        ? 200
+        : 503;
+    const ok = await redisPing().catch(() => false);
+    payload.dependencies.redis = ok ? 'ready' : 'down';
+    const code =
+      payload.status === 'ok' && ok
+        ? 200
+        : payload.status === 'degraded' && ok
+        ? 200
+        : 503;
+    return code;
+  };
+
+  const sendResponse = async () => {
+    const code = await checkRedis();
+    const accept = String(req.headers['accept'] || '').toLowerCase();
+    if (accept.includes('text/html')) {
+      const color =
+        payload.status === 'ok'
+          ? '#16a34a'
+          : payload.status === 'degraded'
+          ? '#d97706'
+          : '#dc2626';
+      const fmt = (n) => `${(n / 1024 / 1024).toFixed(1)} MB`;
+      res.status(code).setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(
+        `<!doctype html><meta charset="utf-8"/><style>body{margin:40px;font-family:system-ui;background:radial-gradient(1000px 700px at 10% -10%, #f2f7ff, #eaf2ff), radial-gradient(1000px 700px at 110% 110%, #ffffff, #f7fbff);color:#0b1220}table{border-collapse:collapse}td{padding:6px 10px;border-bottom:1px dashed #dbe7ff}.chip{display:inline-block;padding:4px 10px;border-radius:999px;background:${color}1a;border:1px solid ${color}55;color:${color};font-weight:600}</style><h1>Readiness</h1><p><span class="chip">${payload.status.toUpperCase()}</span></p><p>Timestamp: ${
+          payload.timestamp
+        } &middot; Uptime: ${formatUptime(
+          payload.uptimeSec
+        )}</p><h3>Node</h3><table><tr><td>Version</td><td>${
+          payload.node.version
+        }</td></tr><tr><td>PID</td><td>${
+          payload.node.pid
+        }</td></tr><tr><td>Platform</td><td>${payload.node.platform} ${
+          payload.node.arch
+        }</td></tr><tr><td>RSS</td><td>${fmt(
+          payload.node.memory.rss
+        )}</td></tr><tr><td>Heap Used</td><td>${fmt(
+          payload.node.memory.heapUsed
+        )} / ${fmt(
+          payload.node.memory.heapTotal
+        )}</td></tr></table><h3>Dependencies</h3><table><tr><td>MongoDB</td><td>${
+          payload.dependencies.mongo
+        }</td></tr><tr><td>Redis</td><td>${
+          payload.dependencies.redis
+        }</td></tr></table>`
+      );
+    } else {
+      res.status(code).json(payload);
+    }
+  };
+
+  sendResponse().catch(() => res.status(503).json({ status: 'degraded' }));
 });
 
 // Human-friendly HTML status dashboard
 router.get('/status', (req, res) => {
   const s = collectStatus();
   s.request.id = req.requestId;
-    const color = s.status === 'ok' ? '#16a34a' : s.status === 'degraded' ? '#d97706' : '#dc2626';
+  const color =
+    s.status === 'ok'
+      ? '#16a34a'
+      : s.status === 'degraded'
+      ? '#d97706'
+      : '#dc2626';
   const badge = s.status.toUpperCase();
   const fmtBytes = (n) => `${(n / 1024 / 1024).toFixed(1)} MB`;
-  const cpu = s.node.cpuLoad && s.node.cpuLoad.length ? s.node.cpuLoad.map((v) => v.toFixed(2)).join(' / ') : 'n/a';
+  const cpu =
+    s.node.cpuLoad && s.node.cpuLoad.length
+      ? s.node.cpuLoad.map((v) => v.toFixed(2)).join(' / ')
+      : 'n/a';
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(`<!doctype html>
+  res.send(`<!doctype html>
   <html lang="en">
     <head>
       <meta charset="utf-8" />
@@ -119,11 +202,15 @@ router.get('/status', (req, res) => {
           <h1 style="margin:0; font-size:22px;">StuddyBuddy • Status</h1>
           <span class="badge">${badge}</span>
         </div>
-        <p class="muted">${s.timestamp} • Request ID: ${s.request.id || 'n/a'}</p>
+        <p class="muted">${s.timestamp} • Request ID: ${
+    s.request.id || 'n/a'
+  }</p>
         <div class="grid">
           <div class="card">
             <div class="k">Application</div>
-            <div class="v">Node ${s.node.version} on ${s.node.platform} ${s.node.arch}</div>
+            <div class="v">Node ${s.node.version} on ${s.node.platform} ${
+    s.node.arch
+  }</div>
             <table>
               <tr><td>PID</td><td class="v">${s.node.pid}</td></tr>
               <tr><td>Uptime</td><td class="v">${s.uptimeSec}s</td></tr>
@@ -134,16 +221,24 @@ router.get('/status', (req, res) => {
           <div class="card">
             <div class="k">Resources</div>
             <table>
-              <tr><td>RSS</td><td class="v">${fmtBytes(s.node.memory.rss)}</td></tr>
-              <tr><td>Heap Used</td><td class="v">${fmtBytes(s.node.memory.heapUsed)} / ${fmtBytes(s.node.memory.heapTotal)}</td></tr>
-              <tr><td>External</td><td class="v">${fmtBytes(s.node.memory.external)}</td></tr>
+              <tr><td>RSS</td><td class="v">${fmtBytes(
+                s.node.memory.rss
+              )}</td></tr>
+              <tr><td>Heap Used</td><td class="v">${fmtBytes(
+                s.node.memory.heapUsed
+              )} / ${fmtBytes(s.node.memory.heapTotal)}</td></tr>
+              <tr><td>External</td><td class="v">${fmtBytes(
+                s.node.memory.external
+              )}</td></tr>
               <tr><td>CPU Load (1m/5m/15m)</td><td class="v">${cpu}</td></tr>
             </table>
           </div>
           <div class="card">
             <div class="k">Dependencies</div>
             <table>
-              <tr><td>MongoDB</td><td class="v">${s.dependencies.mongo}</td></tr>
+              <tr><td>MongoDB</td><td class="v">${
+                s.dependencies.mongo
+              }</td></tr>
             </table>
           </div>
         </div>

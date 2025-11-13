@@ -1,24 +1,21 @@
 /* Enhanced styling for MatchUsersList */
 .match-users-container {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--bg);
   min-height: 100vh;
   padding: 20px 0;
 }
 
 .match-users-header {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  background: var(--surface);
+  backdrop-filter: blur(6px);
   border-radius: 15px;
   padding: 20px;
   margin-bottom: 30px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
 }
 
 .match-users-title {
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text);
   font-weight: 700;
   margin: 0;
 }
@@ -33,29 +30,29 @@
 }
 
 .empty-state {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
+  background: var(--surface);
+  backdrop-filter: blur(6px);
   border-radius: 20px;
   padding: 60px 40px;
   text-align: center;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
 }
 
 .empty-state-icon {
   font-size: 4rem;
-  color: #6c757d;
+  color: var(--muted);
   margin-bottom: 20px;
-  opacity: 0.7;
+  opacity: 0.9;
 }
 
 .empty-state h5 {
-  color: #495057;
+  color: var(--text);
   font-weight: 600;
   margin-bottom: 15px;
 }
 
 .empty-state p {
-  color: #6c757d;
+  color: var(--muted);
   font-size: 1.1rem;
   line-height: 1.6;
   margin: 0;
@@ -100,11 +97,15 @@
     padding: 6px 12px;
   }
   
-  .empty-state {
-    padding: 40px 20px;
+  .empty-state h5 {
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 15px;
   }
-  
-  .empty-state-icon {
-    font-size: 3rem;
+  .empty-state p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin: 0;
   }
 }

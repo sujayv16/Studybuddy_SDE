@@ -2,22 +2,90 @@
   position: fixed;
   top: 80px;
   right: 20px;
-  z-index: 9999;
-  max-width: 350px;
+  z-index: 1400;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .notification-toast {
-  margin-bottom: 10px;
-  border-left: 4px solid #007bff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 10px 30px rgba(2,8,23,0.12);
+  display: block;
+  animation: slideIn 220ms ease-out;
 }
 
 .notification-toast .toast-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 
 .notification-toast .toast-body {
-  background-color: white;
+  padding: 12px 14px 14px 14px;
+  background: transparent;
   word-wrap: break-word;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+/* icon in header */
+.notification-toast .toast-header > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: color-mix(in srgb, var(--primary) 18%, transparent 82%);
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+/* title and time */
+.notification-toast .toast-header strong {
+  font-size: 0.97rem;
+  color: var(--text);
+}
+.notification-toast .toast-header small {
+  color: var(--muted);
+  margin-left: 8px;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-8px); opacity: 0 }
+  to { transform: translateY(0); opacity: 1 }
+}
+
+/* Dropdown / bell styles */
+.notification-toggle {
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  background: transparent !important;
+}
+.notification-badge {
+  position: absolute !important;
+  top: -6px;
+  right: -6px;
+  font-size: 0.65rem !important;
+}
+.notification-menu .notification-item {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.notification-menu .notification-item:last-child { border-bottom: none; }
+.notification-item .notification-body { color: var(--text); }
+
+/* Responsive: make dropdown full-width on small screens */
+@media (max-width: 576px) {
+  .notification-menu { min-width: calc(100vw - 32px) !important; right: 8px !important; left: 8px !important; }
+  .notification-badge { top: -4px; right: -4px; }
 }

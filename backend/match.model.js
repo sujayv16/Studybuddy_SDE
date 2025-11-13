@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
@@ -8,8 +8,8 @@ var Schema = mongoose.Schema;
 // Users are buddies when they each have an entry
 // for each other in the database
 var matchSchema = new Schema({
-    userSent: {type: String, required: true},
-    userTo: {type: String, required: true},
-})
+  userSent: { type: String, required: true },
+  userTo: { type: String, required: true },
+});
 
-module.exports = mongoose.model("match", matchSchema)
+module.exports = mongoose.model('match', matchSchema);

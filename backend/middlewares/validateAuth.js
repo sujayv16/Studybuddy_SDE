@@ -10,4 +10,6 @@ module.exports = function validateAuth(req, res, next) {
   next();
 };
 // (Reverted) Security middleware no longer used. Left as a stub to avoid require errors.
-module.exports = function (_req, _res, next) { next(); };
+module.exports = function (_req, _res, next) {
+  next();
+};

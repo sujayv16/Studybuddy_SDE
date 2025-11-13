@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2025-11-12T13:56:26.274Z",
+  "perf": {
+    "/check-logged-in": {
+      "count": 64,
+      "min": 3.52,
+      "max": 4487.25,
+      "mean": 691.6643749999998,
+      "p50": 7.335000000000001,
+      "p95": 2458.6219999999994,
+      "p99": 3393.9857999999954,
+      "stddev": 999.7859314058733
+    },
+    "/get-users": {
+      "count": 62,
+      "min": 2.34,
+      "max": 2612.47,
+      "mean": 519.4151612903228,
+      "p50": 7.1899999999999995,
+      "p95": 1966.8235,
+      "p99": 2388.0266,
+      "stddev": 749.1617609093813
+    },
+    "/sessions": {
+      "count": 6,
+      "min": 6.47,
+      "max": 1591.7,
+      "mean": 412.4316666666666,
+      "p50": 8.765,
+      "p95": 1406.75,
+      "p99": 1554.71,
+      "stddev": 610.8584669522247
+    },
+    "/image/:username": {
+      "count": 30,
+      "min": 3.72,
+      "max": 3479.46,
+      "mean": 659.6366666666667,
+      "p50": 10.46,
+      "p95": 2813.4214999999986,
+      "p99": 3338.2648000000004,
+      "stddev": 989.2313666826828
+    },
+    "/availability": {
+      "count": 6,
+      "min": 5.86,
+      "max": 2099.21,
+      "mean": 517.9616666666667,
+      "p50": 10.695,
+      "p95": 1817.9900000000002,
+      "p99": 2042.9660000000003,
+      "stddev": 790.2120940485254
+    },
+    "/buddies": {
+      "count": 355,
+      "min": 1.76,
+      "max": 3987.74,
+      "mean": 257.12326760563354,
+      "p50": 8.94,
+      "p95": 1351.4990000000007,
+      "p99": 2286.451199999992,
+      "stddev": 573.7161119593188
+    },
+    "/info": {
+      "count": 10,
+      "min": 12.22,
+      "max": 1572.11,
+      "mean": 254.058,
+      "p50": 15.85,
+      "p95": 1229.3719999999992,
+      "p99": 1503.5624,
+      "stddev": 498.76428943540054
+    },
+    "/candidates": {
+      "count": 625,
+      "min": 1.85,
+      "max": 6325.02,
+      "mean": 335.9826080000001,
+      "p50": 10.8,
+      "p95": 1610.4479999999999,
+      "p99": 3781.2959999999966,
+      "stddev": 748.840908197995
+    },
+    "/": {
+      "count": 266,
+      "min": 2.77,
+      "max": 4497.58,
+      "mean": 335.4336842105263,
+      "p50": 6.155,
+      "p95": 1782.9825,
+      "p99": 2736.7760000000035,
+      "stddev": 687.0903473063892
+    },
+    "/logout": {
+      "count": 1,
+      "min": 820.39,
+      "max": 820.39,
+      "mean": 820.39,
+      "p50": 820.39,
+      "p95": 820.39,
+      "p99": 820.39,
+      "stddev": 0
+    },
+    "/auth": {
+      "count": 1,
+      "min": 94.28,
+      "max": 94.28,
+      "mean": 94.28,
+      "p50": 94.28,
+      "p95": 94.28,
+      "p99": 94.28,
+      "stddev": 0
+    },
+    "/:id": {
+      "count": 4,
+      "min": 8.57,
+      "max": 163.27,
+      "mean": 47.8525,
+      "p50": 9.785,
+      "p95": 140.28099999999995,
+      "p99": 158.67219999999998,
+      "stddev": 66.63836071475649
+    },
+    "/:id/users": {
+      "count": 4,
+      "min": 126.33,
+      "max": 358.28,
+      "mean": 198.84749999999997,
+      "p50": 155.39,
+      "p95": 329.1529999999999,
+      "p99": 352.4545999999999,
+      "stddev": 93.0139057816088
+    },
+    "/addsinglebuddy": {
+      "count": 1,
+      "min": 57.18,
+      "max": 57.18,
+      "mean": 57.18,
+      "p50": 57.18,
+      "p95": 57.18,
+      "p99": 57.18,
+      "stddev": 0
+    },
+    "/matchedbuddyinfo": {
+      "count": 6,
+      "min": 7.38,
+      "max": 13.65,
+      "mean": 9.315,
+      "p50": 8.725,
+      "p95": 12.58,
+      "p99": 13.436,
+      "stddev": 2.035671469892265
+    }
+  },
+  "bench": {
+    "ts": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "stddev": 0
+    },
+    "base": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "stddev": 0
+    },
+    "concurrency": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "stddev": 0
+    },
+    "totalRequests": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "stddev": 0
+    },
+    "report": {
+      "count": 0,
+      "min": 0,
+      "max": 0,
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "stddev": 0
+    }
+  },
+  "metrics": "# HELP process_cpu_user_seconds_total Total user CPU time spent in seconds.\n# TYPE process_cpu_user_seconds_total counter\nprocess_cpu_user_seconds_total 1.531\n\n# HELP process_cpu_system_seconds_total Total system CPU time spent in seconds.\n# TYPE process_cpu_system_seconds_total counter\nprocess_cpu_system_seconds_total 0.234\n\n# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.\n# TYPE process_cpu_seconds_total counter\nprocess_cpu_seconds_total 1.765\n\n# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.\n# TYPE process_start_time_seconds gauge\nprocess_start_time_seconds 1762955694\n\n# HELP process_resident_memory_bytes Resident memory size in bytes.\n# TYPE process_resident_memory_bytes gauge\nprocess_resident_memory_bytes 72073216\n\n# HELP nodejs_eventloop_lag_seconds Lag of event loop in seconds.\n# TYPE nodejs_eventloop_lag_seconds gauge\nnodejs_eventloop_lag_seconds 0\n\n# HELP nodejs_eventloop_lag_min_seconds The minimum recorded event loop delay.\n# TYPE nodejs_eventloop_lag_min_seconds gauge\nnodejs_eventloop_lag_min_seconds 0.009150464\n\n# HELP nodejs_eventloop_lag_max_seconds The maximum recorded event loop delay.\n# TYPE nodejs_eventloop_lag_max_seconds gauge\nnodejs_eventloop_lag_max_seconds 0.024903679\n\n# HELP nodejs_eventloop_lag_mean_seconds The mean of the recorded event loop delays.\n# TYPE nodejs_eventloop_lag_mean_seconds gauge\nnodejs_eventloop_lag_mean_seconds 0.015743303325367965\n\n# HELP nodejs_eventloop_lag_stddev_seconds The standard deviation of the recorded event loop delays.\n# TYPE nodejs_eventloop_lag_stddev_seconds gauge\nnodejs_eventloop_lag_stddev_seconds 0.0007786597055855128\n\n# HELP nodejs_eventloop_lag_p50_seconds The 50th percentile of the recorded event loop delays.\n# TYPE nodejs_eventloop_lag_p50_seconds gauge\nnodejs_eventloop_lag_p50_seconds 0.015982591\n\n# HELP nodejs_eventloop_lag_p90_seconds The 90th percentile of the recorded event loop delays.\n# TYPE nodejs_eventloop_lag_p90_seconds gauge\nnodejs_eventloop_lag_p90_seconds 0.016056319\n\n# HELP nodejs_eventloop_lag_p99_seconds The 99th percentile of the recorded event loop delays.\n# TYPE nodejs_eventloop_lag_p99_seconds gauge\nnodejs_eventloop_lag_p99_seconds 0.016621567\n\n# HELP nodejs_active_resources Number of active resources that are currently keeping the event loop alive, grouped by async resource type.\n# TYPE nodejs_active_resources gauge\nnodejs_active_resources{type=\"FSReqCallback\"} 1\nnodejs_active_resources{type=\"TTYWrap\"} 2\nnodejs_active_resources{type=\"TCPSocketWrap\"} 14\nnodejs_active_resources{type=\"TCPServerWrap\"} 1\nnodejs_active_resources{type=\"Timeout\"} 6\nnodejs_active_resources{type=\"Immediate\"} 1\n\n# HELP nodejs_active_resources_total Total number of active resources.\n# TYPE nodejs_active_resources_total gauge\nnodejs_active_resources_total 25\n\n# HELP nodejs_active_handles Number of active libuv handles grouped by handle type. Every handle type is C++ class name.\n# TYPE nodejs_active_handles gauge\nnodejs_active_handles{type=\"WriteStream\"} 2\nnodejs_active_handles{type=\"Socket\"} 14\nnodejs_active_handles{type=\"Server\"} 1\n\n# HELP nodejs_active_handles_total Total number of active handles.\n# TYPE nodejs_active_handles_total gauge\nnodejs_active_handles_total 17\n\n# HELP nodejs_active_requests Number of active libuv requests grouped by request type. Every request type is C++ class name.\n# TYPE nodejs_active_requests gauge\nnodejs_active_requests{type=\"FSReqCallback\"} 1\n\n# HELP nodejs_active_requests_total Total number of active requests.\n# TYPE nodejs_active_requests_total gauge\nnodejs_active_requests_total 1\n\n# HELP nodejs_heap_size_total_bytes Process heap size from Node.js in bytes.\n# TYPE nodejs_heap_size_total_bytes gauge\nnodejs_heap_size_total_bytes 30662656\n\n# HELP nodejs_heap_size_used_bytes Process heap size used from Node.js in bytes.\n# TYPE nodejs_heap_size_used_bytes gauge\nnodejs_heap_size_used_bytes 27936616\n\n# HELP nodejs_external_memory_bytes Node.js external memory size in bytes.\n# TYPE nodejs_external_memory_bytes gauge\nnodejs_external_memory_bytes 39545289\n\n# HELP nodejs_heap_space_size_total_bytes Process heap space size total from Node.js in bytes.\n# TYPE nodejs_heap_space_size_total_bytes gauge\nnodejs_heap_space_size_total_bytes{space=\"read_only\"} 0\nnodejs_heap_space_size_total_bytes{space=\"new\"} 1048576\nnodejs_heap_space_size_total_bytes{space=\"old\"} 24068096\nnodejs_heap_space_size_total_bytes{space=\"code\"} 2621440\nnodejs_heap_space_size_total_bytes{space=\"shared\"} 0\nnodejs_heap_space_size_total_bytes{space=\"new_large_object\"} 0\nnodejs_heap_space_size_total_bytes{space=\"large_object\"} 2768896\nnodejs_heap_space_size_total_bytes{space=\"code_large_object\"} 155648\nnodejs_heap_space_size_total_bytes{space=\"shared_large_object\"} 0\n\n# HELP nodejs_heap_space_size_used_bytes Process heap space size used from Node.js in bytes.\n# TYPE nodejs_heap_space_size_used_bytes gauge\nnodejs_heap_space_size_used_bytes{space=\"read_only\"} 0\nnodejs_heap_space_size_used_bytes{space=\"new\"} 270920\nnodejs_heap_space_size_used_bytes{space=\"old\"} 22424456\nnodejs_heap_space_size_used_bytes{space=\"code\"} 2422672\nnodejs_heap_space_size_used_bytes{space=\"shared\"} 0\nnodejs_heap_space_size_used_bytes{space=\"new_large_object\"} 0\nnodejs_heap_space_size_used_bytes{space=\"large_object\"} 2685808\nnodejs_heap_space_size_used_bytes{space=\"code_large_object\"} 138304\nnodejs_heap_space_size_used_bytes{space=\"shared_large_object\"} 0\n\n# HELP nodejs_heap_space_size_available_bytes Process heap space size available from Node.js in bytes.\n# TYPE nodejs_heap_space_size_available_bytes gauge\nnodejs_heap_space_size_available_bytes{space=\"read_only\"} 0\nnodejs_heap_space_size_available_bytes{space=\"new\"} 759960\nnodejs_heap_space_size_available_bytes{space=\"old\"} 1178160\nnodejs_heap_space_size_available_bytes{space=\"code\"} 34384\nnodejs_heap_space_size_available_bytes{space=\"shared\"} 0\nnodejs_heap_space_size_available_bytes{space=\"new_large_object\"} 1048576\nnodejs_heap_space_size_available_bytes{space=\"large_object\"} 0\nnodejs_heap_space_size_available_bytes{space=\"code_large_object\"} 0\nnodejs_heap_space_size_available_bytes{space=\"shared_large_object\"} 0\n\n# HELP nodejs_version_info Node.js version info.\n# TYPE nodejs_version_info gauge\nnodejs_version_info{version=\"v20.17.0\",major=\"20\",minor=\"17\",patch=\"0\"} 1\n\n# HELP nodejs_gc_duration_seconds Garbage collection duration by kind, one of major, minor, incremental or weakcb.\n# TYPE nodejs_gc_duration_seconds histogram\nnodejs_gc_duration_seconds_bucket{le=\"0.001\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"0.01\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"0.1\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"1\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"2\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"5\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"+Inf\",kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_sum{kind=\"incremental\"} 0.0014516000002622606\nnodejs_gc_duration_seconds_count{kind=\"incremental\"} 4\nnodejs_gc_duration_seconds_bucket{le=\"0.001\",kind=\"major\"} 0\nnodejs_gc_duration_seconds_bucket{le=\"0.01\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"0.1\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"1\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"2\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"5\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"+Inf\",kind=\"major\"} 6\nnodejs_gc_duration_seconds_sum{kind=\"major\"} 0.018077299997210503\nnodejs_gc_duration_seconds_count{kind=\"major\"} 6\nnodejs_gc_duration_seconds_bucket{le=\"0.001\",kind=\"minor\"} 22\nnodejs_gc_duration_seconds_bucket{le=\"0.01\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_bucket{le=\"0.1\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_bucket{le=\"1\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_bucket{le=\"2\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_bucket{le=\"5\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_bucket{le=\"+Inf\",kind=\"minor\"} 25\nnodejs_gc_duration_seconds_sum{kind=\"minor\"} 0.018628099996596578\nnodejs_gc_duration_seconds_count{kind=\"minor\"} 25\n\n# HELP http_request_duration_seconds Duration of HTTP requests in seconds\n# TYPE http_request_duration_seconds histogram\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/candidates\",status_code=\"200\"} 0.0184246\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/candidates\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/buddies\",status_code=\"200\"} 1.6232628999999996\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/buddies\",status_code=\"200\"} 220\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/\",status_code=\"200\"} 0.006602\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/\",status_code=\"200\"} 1\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/candidates\",status_code=\"304\"} 0.22693180000000002\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/candidates\",status_code=\"304\"} 18\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/\",status_code=\"304\"} 0.07836830000000002\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/\",status_code=\"304\"} 17\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/buddies\",status_code=\"304\"} 0.01784\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/buddies\",status_code=\"304\"} 2\nhttp_request_duration_seconds_bucket{le=\"0.05\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"0.1\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"0.2\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"0.5\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"1\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"2\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"5\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_bucket{le=\"+Inf\",method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\nhttp_request_duration_seconds_sum{method=\"GET\",route=\"/candidates\",status_code=\"401\"} 1.3756628000000004\nhttp_request_duration_seconds_count{method=\"GET\",route=\"/candidates\",status_code=\"401\"} 219\n"
+}

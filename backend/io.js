@@ -1,2 +1,2 @@
-var io = require('socket.io')(); 
+var io = require('socket.io')();
 module.exports = io;

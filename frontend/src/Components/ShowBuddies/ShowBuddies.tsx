@@ -25,13 +25,14 @@ export default function ShowBuddies(){
       <Container>
         <Row>
           <Col>
-            <div className="alert alert-info" style={{ 
+            <div className="alert alert-info studybuddy-info" style={{ 
               padding: '20px', 
               margin: '20px', 
-              backgroundColor: '#d1ecf1', 
-              border: '1px solid #bee5eb',
-              borderRadius: '5px',
-              textAlign: 'center'
+              backgroundColor: 'var(--card-bg)', 
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              textAlign: 'center',
+              color: 'var(--text)'
             }}>
               <h4>🏫 IIT Jodhpur StudyBuddy</h4>
               <p>Maps feature temporarily unavailable, but you can still connect with your fellow IIT Jodhpur students!</p>
@@ -56,8 +57,33 @@ export default function ShowBuddies(){
    return(
       <Container>
         <Row>
-          <Col ><Map selectedType={selectedType} /></Col>
-          <Col md = "auto"><ChatSpot onTypeSelect={setSelectedType} /></Col>
+          <Col md={9}>
+            <div className="d-flex mb-2">
+              <input
+                id="showbuddies-search-input"
+                className="form-control"
+                placeholder="Search buddies by name, course, or bio"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const val = (e.target as HTMLInputElement).value;
+                    const ev = new CustomEvent('showbuddies-search', { detail: val });
+                    window.dispatchEvent(ev);
+                  }
+                }}
+              />
+              <button
+                className="btn btn-outline-primary ms-2"
+                onClick={() => {
+                  const el = document.getElementById('showbuddies-search-input') as HTMLInputElement | null;
+                  const val = el ? el.value : '';
+                  const ev = new CustomEvent('showbuddies-search', { detail: val });
+                  window.dispatchEvent(ev);
+                }}
+              >Search</button>
+            </div>
+            <Map selectedType={selectedType} />
+          </Col>
+          <Col md={3}><ChatSpot onTypeSelect={setSelectedType} /></Col>
         </Row>
       </Container>
    );
@@ -69,6 +95,8 @@ function Map( {selectedType}:any){
     const [latitude, setLatitude] = useState<any>();
     const [longitude, setLongitude] = useState<any>();
     const [markers, setMarkers] = useState<any>([{}]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef<any>(null);
     const [username, setusername] = useState("");
     const [selectedMarker, setSelectedMarker] = useState<any>(null);
     const [socket, setSocket] = useState<any>(null);
@@ -87,6 +115,15 @@ function Map( {selectedType}:any){
       return () => {
         newSocket.close();
       };
+    }, []);
+
+    // Listen for search events from parent input
+    useEffect(() => {
+      const onSearch = (e: any) => {
+        setSearchQuery(e.detail || '');
+      };
+      window.addEventListener('showbuddies-search', onSearch as EventListener);
+      return () => window.removeEventListener('showbuddies-search', onSearch as EventListener);
     }, []);
 
     useEffect(()=>{
@@ -206,43 +243,86 @@ function Map( {selectedType}:any){
         });
 
 
-        fetch(`/users/get-users-inoneKm`)
+        const fetchUsers = (q = '') => {
+          const params = new URLSearchParams();
+          if (q) params.set('q', q);
+          return fetch(`/users/get-users-inoneKm?${params.toString()}`)
+        }
+
+        const debouncedFetch = (q = '') => {
+          if (searchRef.current) clearTimeout(searchRef.current);
+          searchRef.current = setTimeout(() => {
+            fetchUsers(q)
+              .then((response) => {
+                if (response.ok) {
+                  return response.json();
+                }
+                throw response;
+              })
+              .then((data) => {
+                const usersFromSameUniversity = data.usersFromSameUniversity || data.usersWithinOneKm || data.users || [];
+                const user = data.username
+                const newMarkers = usersFromSameUniversity.map((user:any) => {
+                    return {
+                      lat: user.location ? user.location.coordinates[1] : 0, // Handle missing location
+                      lng: user.location ? user.location.coordinates[0] : 0, // Handle missing location
+                      username: user.username,
+                      buddies: user.buddies,
+                      university: user.university,
+                      courses: user.courses,
+                      bio: user.bio
+                    };
+                });
+                setMarkers(newMarkers);
+                setusername(user)
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }, 300);
+        }
+
+        // initial fetch (no query)
+        debouncedFetch('');
+        
+          
+        
+    });
+    }, []);
+
+    // Re-run search when searchQuery changes
+    useEffect(() => {
+      // only run after initial geolocation is set
+      if (typeof latitude === 'undefined') return;
+      if (searchRef.current) clearTimeout(searchRef.current);
+      searchRef.current = setTimeout(() => {
+        const params = new URLSearchParams();
+        if (searchQuery) params.set('q', searchQuery);
+        fetch(`/users/get-users-inoneKm?${params.toString()}`)
           .then((response) => {
-            if (response.ok) {
-              return response.json();
-            }
+            if (response.ok) return response.json();
             throw response;
           })
           .then((data) => {
-            // Updated to handle university-based user filtering
-            const usersFromSameUniversity = data.usersFromSameUniversity || data.usersWithinOneKm; // Backward compatibility
+            const usersFromSameUniversity = data.usersFromSameUniversity || data.usersWithinOneKm || data.users || [];
             const user = data.username
             const newMarkers = usersFromSameUniversity.map((user:any) => {
                 return {
-                  lat: user.location ? user.location.coordinates[1] : 0, // Handle missing location
-                  lng: user.location ? user.location.coordinates[0] : 0, // Handle missing location
+                  lat: user.location ? user.location.coordinates[1] : 0,
+                  lng: user.location ? user.location.coordinates[0] : 0,
                   username: user.username,
                   buddies: user.buddies,
                   university: user.university,
                   courses: user.courses,
                   bio: user.bio
                 };
-              
-            },
-            );
-            //fa86edc0-67b7-4a78-a773-4a73614bf4b5
-            
+            });
             setMarkers(newMarkers);
             setusername(user)
           })
-          
-          .catch((error) => {
-            console.log(error);
-          });
-          
-        
-    });
-    }, []);
+          .catch((error) => console.error(error));
+      }, 300);
+    }, [searchQuery, latitude]);
 
     
     
@@ -398,9 +478,9 @@ function Map( {selectedType}:any){
           center={loc}
           radius={2000}
           options={{
-            fillColor: "#1a73e8",
+            fillColor: "var(--primary)",
             fillOpacity: 0.2,
-            strokeColor: "#1a73e8",
+            strokeColor: "var(--primary)",
             strokeOpacity: 0.7,
             strokeWeight: 2,
           }}

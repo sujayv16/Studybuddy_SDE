@@ -7,14 +7,22 @@ mongoose.set('strictQuery', false);
 // MongoDB connection with fallback options
 const connectWithFallback = async () => {
   const useLocalMongo = process.env.LOCAL_MONGO === 'true';
-  const primaryUrl = useLocalMongo ? process.env.MONGO_URL_LOCAL : process.env.MONGO_URL;
-  const fallbackUrl = useLocalMongo ? process.env.MONGO_URL : process.env.MONGO_URL_LOCAL;
+  const primaryUrl = useLocalMongo
+    ? process.env.MONGO_URL_LOCAL
+    : process.env.MONGO_URL;
+  const fallbackUrl = useLocalMongo
+    ? process.env.MONGO_URL
+    : process.env.MONGO_URL_LOCAL;
 
   if (!primaryUrl) {
     throw new Error('MongoDB URL environment variable is not set');
   }
 
-  console.log(`🔄 Attempting to connect to ${useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'}...`);
+  console.log(
+    `🔄 Attempting to connect to ${
+      useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'
+    }...`
+  );
 
   // Primary connection options
   const getPrimaryOptions = () => {
@@ -61,19 +69,33 @@ const connectWithFallback = async () => {
 
   try {
     await mongoose.connect(primaryUrl, getPrimaryOptions());
-    console.log(`✅ Connected to ${useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'} successfully`);
+    console.log(
+      `✅ Connected to ${
+        useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'
+      } successfully`
+    );
     return true;
   } catch (error) {
     console.warn(`⚠️ Failed to connect to primary database: ${error.message}`);
-    
+
     if (fallbackUrl) {
-      console.log(`🔄 Attempting to connect to ${useLocalMongo ? 'MongoDB Atlas' : 'Local MongoDB'} as fallback...`);
+      console.log(
+        `🔄 Attempting to connect to ${
+          useLocalMongo ? 'MongoDB Atlas' : 'Local MongoDB'
+        } as fallback...`
+      );
       try {
         await mongoose.connect(fallbackUrl, getFallbackOptions());
-        console.log(`✅ Connected to fallback ${useLocalMongo ? 'MongoDB Atlas' : 'Local MongoDB'} successfully`);
+        console.log(
+          `✅ Connected to fallback ${
+            useLocalMongo ? 'MongoDB Atlas' : 'Local MongoDB'
+          } successfully`
+        );
         return true;
       } catch (fallbackError) {
-        console.error(`❌ Failed to connect to fallback database: ${fallbackError.message}`);
+        console.error(
+          `❌ Failed to connect to fallback database: ${fallbackError.message}`
+        );
       }
     }
 
@@ -81,14 +103,22 @@ const connectWithFallback = async () => {
     console.error('❌ Could not connect to any database. Please check:');
     if (!useLocalMongo) {
       console.log('  💡 MongoDB Atlas issues:');
-      console.log('     - Check your IP address is whitelisted in Network Access');
+      console.log(
+        '     - Check your IP address is whitelisted in Network Access'
+      );
       console.log('     - Verify your username and password are correct');
-      console.log('     - Try setting LOCAL_MONGO=true in .env to use local MongoDB');
+      console.log(
+        '     - Try setting LOCAL_MONGO=true in .env to use local MongoDB'
+      );
     } else {
       console.log('  💡 Local MongoDB issues:');
       console.log('     - Make sure MongoDB is running on localhost:27017');
-      console.log('     - Try: "C:\\Program Files\\MongoDB\\Server\\8.2\\bin\\mongod.exe" --dbpath C:\\data\\db');
-      console.log('     - Or set LOCAL_MONGO=false in .env to use MongoDB Atlas');
+      console.log(
+        '     - Try: "C:\\Program Files\\MongoDB\\Server\\8.2\\bin\\mongod.exe" --dbpath C:\\data\\db'
+      );
+      console.log(
+        '     - Or set LOCAL_MONGO=false in .env to use MongoDB Atlas'
+      );
     }
 
     throw error;

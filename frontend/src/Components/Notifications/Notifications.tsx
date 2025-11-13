@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Toast, ToastContainer } from 'react-bootstrap';
 import './Notifications.css';
+import { useNavigate } from 'react-router-dom';
 
 interface NotificationData {
   id: string;
@@ -21,6 +22,7 @@ interface NotificationsProps {
 
 const Notifications: React.FC<NotificationsProps> = ({ socket, currentChatId, currentUsername }) => {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (socket) {
@@ -112,6 +114,18 @@ const Notifications: React.FC<NotificationsProps> = ({ socket, currentChatId, cu
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
+  const openNotification = (notification: NotificationData) => {
+    // Navigate to chatroom if chatId present
+    if (notification.chatId && notification.chatId !== 'system') {
+      // close toasts and navigate
+      removeNotification(notification.id);
+      navigate(`/chatroom/${notification.chatId}`);
+    } else {
+      // remove non-navigable notification
+      removeNotification(notification.id);
+    }
+  };
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'message':
@@ -153,20 +167,20 @@ const Notifications: React.FC<NotificationsProps> = ({ socket, currentChatId, cu
           autohide
           className="notification-toast"
         >
-          <Toast.Header>
+          <Toast.Header onClick={() => openNotification(notification)} style={{ cursor: notification.chatId ? 'pointer' : 'default' }}>
             <span className="me-2">{getNotificationIcon(notification.type)}</span>
             <strong className="me-auto">{getNotificationTitle(notification)}</strong>
-            <small>{new Date(notification.timestamp).toLocaleTimeString()}</small>
+            <small>{notification.chatTitle ? notification.chatTitle : new Date(notification.timestamp).toLocaleTimeString()}</small>
           </Toast.Header>
-          <Toast.Body>
-            {notification.type === 'message' && (
-              <div>
-                <strong>{notification.from}:</strong> {notification.body}
+          <Toast.Body onClick={() => openNotification(notification)} style={{ cursor: notification.chatId ? 'pointer' : 'default' }}>
+            <div style={{ fontSize: '0.95rem' }}>
+              <div style={{ marginBottom: 6, color: 'var(--muted)', fontSize: '0.85rem' }}>
+                From: {notification.from} {notification.chatTitle ? `• ${notification.chatTitle}` : ''}
               </div>
-            )}
-            {notification.type !== 'message' && (
-              <div>{notification.body}</div>
-            )}
+              <div>
+                {notification.body}
+              </div>
+            </div>
           </Toast.Body>
         </Toast>
       ))}

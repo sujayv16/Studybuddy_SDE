@@ -1,29 +1,85 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../user.model");
-const Match = require("../match.model");
+const User = require('../user.model');
+const Match = require('../match.model');
+const cache = require('../middlewares/cache');
 
 // Retrieve current user's matched buddies
-router.get("/buddies", async (req, res, next) => {
+router.get('/buddies', cache({ ttl: 30000 }), async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     return res.sendStatus(401);
   }
 
   // Get current user info
-  const currUser = await User.findOne({ username: req.session.user.username });
-
-  // Get list of users that are the current user's buddies
-  const buddies = await User.find(
-    { username: { $in: currUser.buddies } },
-    { password: 0, image: 0 } // hide password
+  const currUser = await User.findOne({
+    username: req.session.user.username,
+  }).lean();
+  if (!currUser) return res.sendStatus(401);
+  // Support search and pagination for large buddy lists. If no query params
+  // provided, return the full array (backwards compatible). If any of q/page/limit
+  // are present, return a paginated object { buddies, total, page, limit }.
+  const q = (req.query.q || '').toString().trim();
+  const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+  const limit = Math.min(
+    Math.max(parseInt(req.query.limit || '20', 10), 1),
+    100
   );
+  const fetchAll = req.query.fetchAll === 'true';
 
-  res.json(buddies);
+  // If no pagination/search params and not explicitly asking for paginated, return full list
+  const hasParams = q || req.query.page || req.query.limit || req.query.course;
+  if (!hasParams && !req.query.fetchAll) {
+    const buddies = await User.find(
+      { username: { $in: currUser.buddies } },
+      { password: 0, image: 0 }
+    )
+      .select('username university courses bio available')
+      .lean();
+    return res.json(buddies);
+  }
+
+  // Build base filter from buddy usernames
+  const baseFilter = { username: { $in: currUser.buddies } };
+  if (q) {
+    // For short queries (partial username) use regex fallback for substring matches.
+    if (q.length <= 3) {
+      const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      baseFilter.$or = [{ username: re }, { bio: re }, { courses: re }];
+    } else {
+      // Use text index search when available for better performance at scale.
+      // This requires a text index on username/bio/courses (defined in user.model.js).
+      baseFilter.$text = { $search: q };
+    }
+  }
+
+  try {
+    if (fetchAll) {
+      const bs = await User.find(baseFilter, { password: 0, image: 0 })
+        .select('username university courses bio available')
+        .sort(q ? { score: { $meta: 'textScore' } } : {})
+        .lean();
+      return res.json(bs);
+    }
+
+    const skip = (page - 1) * limit;
+    const total = await User.countDocuments(baseFilter);
+    const buddies = await User.find(baseFilter, { password: 0, image: 0 })
+      .skip(skip)
+      .limit(limit)
+      .select('username university courses bio available')
+      .sort(q ? { score: { $meta: 'textScore' } } : {})
+      .lean();
+
+    res.json({ buddies, total, page, limit });
+  } catch (err) {
+    console.error('Error querying buddies', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Get list of users that have sent matches to current user and are not buddies
-router.get("/matched", async (req, res, next) => {
+router.get('/matched', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -31,7 +87,7 @@ router.get("/matched", async (req, res, next) => {
   let username = req.session.user.username;
 
   // Get all users who matched to current user
-  const usersQuery = await Match.find({ userTo: username });
+  const usersQuery = await Match.find({ userTo: username }).lean();
   if (usersQuery.length <= 0) {
     // No one matched with current user
     res.json(null); // return blank json of no users
@@ -39,8 +95,10 @@ router.get("/matched", async (req, res, next) => {
   }
 
   // Get current user's buddies to filter out
-  let buddiesQuery = await User.findOne({ username: username });
-  let buddies = buddiesQuery.buddies;
+  let buddiesQuery = await User.findOne({ username: username })
+    .select('buddies')
+    .lean();
+  let buddies = (buddiesQuery && buddiesQuery.buddies) || [];
 
   // Filter out users we are already buddies with
   let matchedUsers = [];
@@ -53,75 +111,98 @@ router.get("/matched", async (req, res, next) => {
   // Retrieve profile details of users
   let result = await User.find(
     { username: { $in: matchedUsers } },
-    { password: 0, image: 0 } // DONT REVEAL PASSWORDS
-  );
+    { password: 0, image: 0 }
+  )
+    .select('username university courses bio available')
+    .lean();
   res.json(result);
 });
 
 // Get a list of people who can match with you
-router.get("/candidates", async (req, res, next) => {
+router.get('/candidates', cache({ ttl: 5000 }), async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     return res.sendStatus(401);
   }
 
   // Get user's current details
-  const currUser = await User.findOne({ username: req.session.user.username });
-  
-  console.log('=== MATCH CANDIDATES DEBUG ===');
-  console.log('Current user:', currUser.username);
-  console.log('Current user university:', currUser.university);
-  console.log('Current user buddies:', currUser.buddies);
-
-  // Get list of users that current user has sent match requests to
-  const matchesSent = await Match.find({ userSent: currUser.username });
-  console.log('Matches sent by user:', matchesSent.length);
-
-  // Add users that user has already sent requests to to filter
-  const filterOut = currUser.buddies;
-  matchesSent.forEach((match) => {
-    filterOut.push(match.userTo);
+  const currUser = await User.findOne({
+    username: req.session.user.username,
+  }).lean();
+  if (!currUser) return res.sendStatus(401);
+  // Build filter to exclude current user's buddies and prior matches
+  const matchesSent = await Match.find({ userSent: currUser.username }).lean();
+    // Prepare baseline filterOut from currUser.buddies; we'll append matches below
+    let filterOut = Array.isArray(currUser.buddies) ? [...currUser.buddies] : [];
+  matchesSent.forEach((m) => {
+    if (m.userTo) filterOut.push(m.userTo);
   });
-  
-  console.log('Users to filter out:', filterOut);
 
-  // Handle university variations for IIT Jodhpur
+  // Build university variations to match common case differences
   const universityVariations = [
     currUser.university,
-    currUser.university.toLowerCase(),
-    currUser.university.toUpperCase(),
-  ];
-  
-  // Add specific IIT Jodhpur variations - handle both directions
-  const uni = currUser.university.toLowerCase();
+    currUser.university && currUser.university.toLowerCase(),
+    currUser.university && currUser.university.toUpperCase(),
+  ].filter(Boolean);
+  const uni = (currUser.university || '').toLowerCase();
   if (uni.includes('iit') || uni.includes('jodh') || uni === 'iitj') {
     universityVariations.push(
-      'IITJ', 'IIT Jodhpur', 'iit jodhpur', 'IIT JODHPUR', 'iitj',
-      'IIT-Jodhpur', 'iit-jodhpur', 'Iit Jodhpur', 'IIT_Jodhpur'
+      'IITJ',
+      'IIT Jodhpur',
+      'iit jodhpur',
+      'IIT JODHPUR',
+      'iitj',
+      'IIT-Jodhpur',
+      'iit-jodhpur',
+      'Iit Jodhpur',
+      'IIT_Jodhpur'
     );
   }
-  
-  console.log('University variations to match:', universityVariations);
 
-  // Get list of users that match based on similar fields from same university
-  const candidates = await User.find(
-    {
-      username: { $nin: filterOut, $ne: currUser.username },
-      university: { $in: universityVariations }, // Match any university variation
-      // available: true, // Remove this requirement - show all users from same university
-    },
-    { password: 0, image: 0 }
+  // Allow basic search and pagination via query params
+  const q = (req.query.q || '').toString().trim();
+  const course = (req.query.course || '').toString().trim();
+  const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+  const limit = Math.min(
+    Math.max(parseInt(req.query.limit || '20', 10), 1),
+    100
   );
-  
-  console.log('Found candidates:', candidates.length);
-  console.log('Candidates:', candidates.map(u => ({ username: u.username, university: u.university })));
-  console.log('=== END DEBUG ===');
+  const skip = (page - 1) * limit;
 
-  res.json(candidates);
+  // Base filter: same university and not in filterOut
+  const baseFilter = {
+    username: { $nin: filterOut, $ne: currUser.username },
+    university: { $in: universityVariations },
+  };
+
+  // Add course filter if provided
+  if (course) {
+    baseFilter.courses = course;
+  }
+
+  // If a search query is provided, match username, bio, or courses
+  if (q) {
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    baseFilter.$or = [{ username: re }, { bio: re }, { courses: re }];
+  }
+
+  try {
+    const total = await User.countDocuments(baseFilter);
+    const candidates = await User.find(baseFilter, { password: 0, image: 0 })
+      .skip(skip)
+      .limit(limit)
+      .select('username university courses bio available buddies')
+      .lean();
+
+    res.json({ candidates, total, page, limit });
+  } catch (err) {
+    console.error('Error querying candidates', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Matches a user to another user
-router.post("/match", async (req, res, next) => {
+router.post('/match', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);
@@ -182,7 +263,7 @@ router.post("/match", async (req, res, next) => {
 });
 
 // Deletes a match between two users
-router.delete("/unmatch", async (req, res, next) => {
+router.delete('/unmatch', async (req, res, next) => {
   if (!req.session.user) {
     // not logged in
     res.sendStatus(401);

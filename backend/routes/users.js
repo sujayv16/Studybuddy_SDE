@@ -1,113 +1,120 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const User = require("../user.model");
-const geolib = require("geolib");
-const multerUpload = require("../multer-config");
-const defaultAvatar = require("../default.avatar");
+const User = require('../user.model');
+const geolib = require('geolib');
+const multerUpload = require('../multer-config');
+const defaultAvatar = require('../default.avatar');
 const bcrypt = require('bcrypt');
 const { hashPassword, looksHashed } = require('../utils/password');
 const logger = require('../logging/logger');
 const validateAuth = require('../middlewares/validateAuth');
 const validateSignup = require('../middlewares/validateSignup');
 const { authRateLimiter } = require('../middlewares/rateLimit');
-// const multer = require("multer");
-// const multer = require('multer');
-// const upload = multer({dest: 'Images/'})
+const cache = require('../middlewares/cache');
 
-router.post("/auth", authRateLimiter(), validateAuth, async function (req, res, next) {
-  const { username, password } = req.body;
-
-  // small constant-time-ish delay to make brute-force a bit harder (200-400ms)
-  const delay = (ms) => new Promise((r) => setTimeout(r, ms));
-  const start = Date.now();
-  logger.info("auth_attempt", { username, requestId: req.requestId, ip: req.ip });
-
-  try {
-    // First: legacy plaintext match path (for truly legacy records)
-    let user = await User.findOne({ username: username, password: password });
-    if (!user) {
-      // Then: hashed path
-      const byUsername = await User.findOne({ username: username });
-      if (!byUsername) {
+// Authentication
+router.post(
+  '/auth',
+  authRateLimiter(),
+  validateAuth,
+  async (req, res, next) => {
+    const { username, password } = req.body;
+    const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+    const start = Date.now();
+    logger.info('auth_attempt', {
+      username,
+      requestId: req.requestId,
+      ip: req.ip,
+    });
+    try {
+      // Prefer checking by username, then comparing password (supports hashed storage)
+      let user = await User.findOne({ username }).lean();
+      if (!user) {
         await delay(Math.max(0, 250 - (Date.now() - start)));
-        logger.warn("auth_fail_user_not_found", { username, requestId: req.requestId, ip: req.ip });
-        return res.status(401).send("Invalid username or password");
+        logger.warn('auth_fail_user_not_found', {
+          username,
+          requestId: req.requestId,
+          ip: req.ip,
+        });
+        return res.status(401).send('Invalid username or password');
       }
-      const stored = byUsername.password || '';
+      const stored = user.password || '';
       if (looksHashed(stored)) {
         const ok = await bcrypt.compare(password, stored).catch(() => false);
         if (!ok) {
           await delay(Math.max(0, 250 - (Date.now() - start)));
-          logger.warn("auth_fail_bad_password", { username, hashed: true, requestId: req.requestId, ip: req.ip });
-          return res.status(401).send("Invalid username or password");
+          logger.warn('auth_fail_bad_password', {
+            username,
+            hashed: true,
+            requestId: req.requestId,
+            ip: req.ip,
+          });
+          return res.status(401).send('Invalid username or password');
         }
-        user = byUsername;
-        logger.info("auth_success_hashed", { username, requestId: req.requestId, ip: req.ip });
       } else {
-        await delay(Math.max(0, 250 - (Date.now() - start)));
-        logger.warn("auth_fail_bad_password", { username, hashed: false, requestId: req.requestId, ip: req.ip });
-        return res.status(401).send("Invalid username or password");
-      }
-    } else {
-      // Legacy plaintext matched: auto-upgrade to bcrypt hash asynchronously
-      if (!looksHashed(user.password)) {
-        try {
-          const newHash = await hashPassword(password);
-          await User.updateOne({ _id: user._id }, { $set: { password: newHash } });
-          logger.info("auth_upgrade_password_hash", { username, requestId: req.requestId });
-        } catch (e) {
-          logger.warn("auth_upgrade_password_hash_failed", { username, error: e.message, requestId: req.requestId });
+        // legacy plaintext (rare)
+        if (password !== stored) {
+          await delay(Math.max(0, 250 - (Date.now() - start)));
+          logger.warn('auth_fail_bad_password', {
+            username,
+            hashed: false,
+            requestId: req.requestId,
+            ip: req.ip,
+          });
+          return res.status(401).send('Invalid username or password');
         }
       }
+
+      // Regenerate session and set user (lean object is stored)
+      req.session.regenerate(function (err) {
+        if (err) {
+          logger.error('auth_session_regenerate_error', {
+            username,
+            error: err.message,
+            requestId: req.requestId,
+          });
+          return res.status(500).send('Session regeneration failed');
+        }
+        // store minimal user info in session
+        req.session.user = { username: user.username };
+        logger.info('auth_login_success', {
+          username: user.username,
+          requestId: req.requestId,
+        });
+        res.status(200).send('Login successful');
+      });
+    } catch (e) {
+      logger.error('auth_error', {
+        username,
+        error: e.message,
+        requestId: req.requestId,
+      });
+      next(e);
     }
-
-    logger.info("auth_user_found", { username: user.username, requestId: req.requestId });
-    req.session.regenerate(function (err) {
-      if (err) {
-        logger.error("auth_session_regenerate_error", { username, error: err.message, requestId: req.requestId });
-        return res.status(500).send("Session regeneration failed");
-      }
-      req.session.user = user;
-      logger.info("auth_login_success", { username: user.username, requestId: req.requestId });
-      res.status(200).send("Login successful");
-    });
-  } catch (e) {
-    logger.error("auth_error", { username, error: e.message, requestId: req.requestId });
-    next(e);
   }
-});
+);
 
-
-// router.post("/test", multerUpload.single("image"), async function(req, res){
-//   console.log("HERE IT IS _______________________________________________________________")
-//   console.log(req.file);
-// })
-
+// Signup
 router.post(
-  "/signup",
-  multerUpload.single("image"),
+  '/signup',
+  multerUpload.single('image'),
   validateSignup,
-  async function (req, res, next) {
+  async (req, res) => {
     const { username, password, university, bio } = req.body;
     let courses = [];
     try {
-      courses = Array.isArray(req.body.courses) ? req.body.courses : JSON.parse(req.body.courses || '[]');
+      courses = Array.isArray(req.body.courses)
+        ? req.body.courses
+        : JSON.parse(req.body.courses || '[]');
     } catch (e) {
       return res.status(400).json({ message: 'Invalid courses format' });
     }
 
-    let bufferToStore;
+    let bufferToStore = Buffer.from(defaultAvatar, 'base64');
     if (req.file) {
-      // If an image was provided in the request, use its buffer
-      let base64 = req.file.buffer.toString("base64");
-      bufferToStore = new Buffer(base64, "base64");
-    } else {
-      // If no image was provided, use the default image from default.avatar.js
-      bufferToStore = Buffer.from(defaultAvatar, "base64");
+      bufferToStore = Buffer.from(req.file.buffer);
     }
 
-    // create a new user with the provided information
-    // Always hash new user passwords
     let hashed;
     try {
       hashed = await hashPassword(password);
@@ -116,352 +123,376 @@ router.post(
     }
 
     const user = new User({
-      username: username,
+      username,
       password: hashed,
-      university: university,
-      courses: courses,
-      bio: bio,
-      //added the image of filepath to the image key
+      university,
+      courses,
+      bio,
       image: bufferToStore,
-      location: {
-        type: "Point",
-        coordinates: [0, 0], // default coordinates
-      },
+      location: { type: 'Point', coordinates: [0, 0] },
     });
 
-    // save the new user to the database
     try {
       await user.save();
       req.session.regenerate(function (err) {
-        if (err) {
-          console.log(err);
-          res.status(500).send("Session regeneration failed");
-        } else {
-          req.session.user = user;
-            // session established
-          // the session has been regenerated, do something with it
-          res.status(200).send("Login successful");
+        if (err) return res.status(500).send('Session regeneration failed');
+        req.session.user = { username: user.username };
+        // invalidate caches that may contain this user
+        try {
+          cache.clearPattern('/users');
+          cache.clearPattern('/matches');
+          cache.clearKey(`GET:/users/image/${user.username}`);
+        } catch (e) {
+          /* ignore */
         }
+        res.status(200).send('Login successful');
       });
     } catch (err) {
       console.error(err);
-      res.status(500).send("Error creating user");
+      res.status(500).send('Error creating user');
     }
   }
 );
 
-// DEBUG ROUTE - List all users in database
-router.get("/debug-all-users", async (req, res) => {
+// Debug list (admin/dev)
+router.get('/debug-all-users', async (req, res) => {
   try {
     const allUsers = await User.find({}, { password: 0, image: 0 })
-      .select("username university available courses buddies _id");
-    
-    console.log('=== ALL USERS IN DATABASE ===');
-    allUsers.forEach((user, index) => {
-      console.log(`${index + 1}. ${user.username} - ${user.university} - Available: ${user.available}`);
-    });
-    console.log('=== END ALL USERS ===');
-    
-    res.json({ 
-      total: allUsers.length, 
-      users: allUsers 
-    });
+      .select('username university available courses buddies _id')
+      .lean();
+    res.json({ total: allUsers.length, users: allUsers });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-router.get("/get-users", async (req, res, next) => {
+// Get users (supports pagination + search). Uses text-index when q present.
+router.get('/get-users', cache({ ttl: 5000 }), async (req, res) => {
   try {
-    const users = await User.find({}, { password: 0, image: 0 });
+    const q = (req.query.q || '').toString().trim();
+    const page = Math.max(parseInt(req.query.page || '1', 10), 1);
+    const limit = Math.min(
+      Math.max(parseInt(req.query.limit || '50', 10), 1),
+      200
+    );
+    const skip = (page - 1) * limit;
 
-    res.json(users);
+    const baseFilter = {};
+    if (q) {
+      // Use text search for longer queries (better relevance). For short queries
+      // (partial username searches) use regex on username/bio/courses for substring matches.
+      if (q.length <= 3) {
+        const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+        baseFilter.$or = [{ username: re }, { bio: re }, { courses: re }];
+      } else {
+        baseFilter.$text = { $search: q };
+      }
+    }
+
+    if (!q && !req.query.page && !req.query.limit) {
+      const users = await User.find({}, { password: 0, image: 0 }).lean();
+      return res.json(users);
+    }
+
+    const total = await User.countDocuments(baseFilter);
+    const usersQuery = User.find(baseFilter, { password: 0, image: 0 })
+      .skip(skip)
+      .limit(limit)
+      .select('username university courses bio available location')
+      .lean();
+    if (q) usersQuery.sort({ score: { $meta: 'textScore' } });
+    const users = await usersQuery;
+
+    res.json({ users, total, page, limit });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Error retrieving users" });
+    res.status(500).json({ message: 'Error retrieving users' });
   }
 });
 
-router.get("/check-logged-in", async function (req, res, next) {
+router.get('/check-logged-in', async (req, res) => {
   let loggedIn = false;
-  let username = "";
+  let username = '';
   if (req.session.user) {
     loggedIn = true;
     username = req.session.user.username;
   }
-  const available = await User.findOne({ username: username }).select(
-    "available"
-  );
+  const available = username
+    ? await User.findOne({ username }).select('available').lean()
+    : null;
   res.json({ loggedIn, username, available });
 });
 
-router.get("/logout", function (req, res, next) {
+router.get('/logout', (req, res) => {
   let loggedOut = true;
   req.session.destroy(function (err) {
-    if (err) {
-      loggedOut = false;
-    }
-
+    if (err) loggedOut = false;
     res.json({ loggedOut });
   });
 });
 
-//-------------------------------------------------
-router.get("/get-users-inoneKm", async (req, res) => {
+// get-users-inoneKm (university filter + optional q). Uses text-index if q present.
+router.get('/get-users-inoneKm', cache({ ttl: 5000 }), async (req, res) => {
   try {
+    if (!req.session.user)
+      return res.status(401).json({ message: 'Not logged in' });
     const username = req.session.user.username;
-    const currentUser = await User.findOne({ username: username });
-    if (!currentUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-    // Remove location requirement - university-based system doesn't need location
-    // if (!currentUser.location) {
-    //   return res.status(400).json({ message: "User location not available" });
-    // }
+    const currentUser = await User.findOne({ username }).lean();
+    if (!currentUser)
+      return res.status(404).json({ message: 'User not found' });
 
-    // Find all users from the same university (with flexible matching for IIT Jodhpur)
-    // Handle variations like "IITJ", "IIT Jodhpur", "iit jodhpur", etc.
     const universityVariations = [
       currentUser.university,
-      currentUser.university.toLowerCase(),
-      currentUser.university.toUpperCase(),
-    ];
-    
-    // Add specific IIT Jodhpur variations - handle both directions  
-    const uni = currentUser.university.toLowerCase();
+      (currentUser.university || '').toLowerCase(),
+      (currentUser.university || '').toUpperCase(),
+    ].filter(Boolean);
+    const uni = (currentUser.university || '').toLowerCase();
     if (uni.includes('iit') || uni.includes('jodh') || uni === 'iitj') {
       universityVariations.push(
-        'IITJ', 'IIT Jodhpur', 'iit jodhpur', 'IIT JODHPUR', 'iitj',
-        'IIT-Jodhpur', 'iit-jodhpur', 'Iit Jodhpur', 'IIT_Jodhpur'
+        'IITJ',
+        'IIT Jodhpur',
+        'iit jodhpur',
+        'IIT JODHPUR',
+        'iitj',
+        'IIT-Jodhpur',
+        'iit-jodhpur',
+        'Iit Jodhpur',
+        'IIT_Jodhpur'
       );
     }
-    
-    const usersFromSameUniversity = await User.find(
-      {
-        username: { $ne: username }, // Exclude current user
-        university: { $in: universityVariations }, // Match any variation
-        // available: true, // Remove this requirement - show all users from same university
-      },
-      { image: 0, password: 0 }
-    ).select("username location buddies _id university courses bio available"); //.populate('matchedbuddies'); <- can use this if need be depending on the implmentation of match buddy
 
-    for (let i = 0; i < usersFromSameUniversity.length; i++) {
-      console.log(`User ${i+1}: ${usersFromSameUniversity[i].username}`);
-      console.log(`University: ${usersFromSameUniversity[i].university}`);
-      console.log(`Available: ${usersFromSameUniversity[i].available}`);
-      console.log(`Courses: ${usersFromSameUniversity[i].courses}`);
-      console.log('---');
-    }
+    const q = (req.query.q || '').toString().trim();
+    const baseFilter = {
+      username: { $ne: username },
+      university: { $in: universityVariations },
+    };
+    if (q) baseFilter.$text = { $search: q };
 
-    console.log(`Found ${usersFromSameUniversity.length} users from ${currentUser.university}`);
-    res.json({ usersFromSameUniversity, username: username });
+    const usersFromSameUniversity = await User.find(baseFilter, {
+      image: 0,
+      password: 0,
+    })
+      .select('username location buddies _id university courses bio available')
+      .lean();
+
+    res.json({ usersFromSameUniversity, username });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 });
-//----------------------------------------
 
-router.post("/availability", (req, res) => {
+// availability update
+router.post('/availability', (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
   const username = req.session.user.username;
   const { available } = req.body;
-  const filter = { username: username };
-  const update = {
-    $set: { available: available },
-  };
-  User.updateOne(filter, update, function (err, result) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    console.log("Updated availability");
-    console.log(result);
-  });
-
+  User.updateOne({ username }, { $set: { available } }).catch((e) =>
+    console.error(e)
+  );
+  try {
+    cache.clearPattern('/matches');
+    cache.clearPattern('/users');
+  } catch (e) {}
   res.sendStatus(200);
 });
 
-router.post("/post-loc/", (req, res) => {
+router.post('/post-loc', (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
   const username = req.session.user.username;
   const { lat, lng } = req.body;
-
-  const filter = { username: username };
-  const update = {
-    $set: { location: { type: "Point", coordinates: [lng, lat] } },
-  };
-
-  User.updateOne(filter, update, function (err, result) {
-    if (err) {
-      console.log(err);
-      return;
-    }
-
-    console.log("Updated the location");
-    console.log(result);
-  });
-
+  User.updateOne(
+    { username },
+    { $set: { location: { type: 'Point', coordinates: [lng, lat] } } }
+  ).catch((e) => console.error(e));
+  try {
+    cache.clearPattern('/matches');
+    cache.clearPattern('/users');
+  } catch (e) {}
   res.sendStatus(200);
 });
 
-router.post("/addreview", async (req, res) => {
-  console.log(req.body);
-  console.log(
-    "HERE IT IS ____1234567890987654___________________________!!!!!!!!!!!!!!!!!!!"
-  );
-
+router.post('/addreview', async (req, res) => {
   try {
     await Promise.all(
       req.body.map(async (review) => {
         const filter = { username: review.name };
         const update = { $push: { reviews: review.reviews } };
-        const result = await User.updateMany(filter, update);
-
-        console.log(result);
+        await User.updateMany(filter, update);
       })
     );
-    res.json({ message: "Reviews added successfully" });
+    try {
+      cache.clearPattern('/users');
+      cache.clearPattern('/matches');
+    } catch (e) {}
+    res.json({ message: 'Reviews added successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-router.post("/edit", multerUpload.single("image"), async (req, res) => {
+router.post('/edit', multerUpload.single('image'), async (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
   const username = req.session.user.username;
   const university = req.body.university;
-  const courses = req.body.courses;
+  let courses = [];
+  try {
+    courses = Array.isArray(req.body.courses)
+      ? req.body.courses
+      : JSON.parse(req.body.courses || '[]');
+  } catch (e) {
+    courses = req.body.courses || [];
+  }
   const bio = req.body.bio;
-  if (req.file) {
-    let base64 = req.file.buffer.toString("base64");
-    image = new Buffer(base64, "base64");
-    try {
+  try {
+    if (req.file) {
+      const image = Buffer.from(req.file.buffer);
       const user = await User.findOneAndUpdate(
         { username },
         { university, courses, image, bio },
         { new: true }
-      );
-      res.json(user);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      ).lean();
+      try {
+        cache.clearKey(`GET:/users/image/${username}`);
+        cache.clearPattern('/users');
+        cache.clearPattern('/matches');
+      } catch (e) {}
+      return res.json(user);
     }
-  } else {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { university, courses, bio },
+      { new: true }
+    ).lean();
     try {
-      const user = await User.findOneAndUpdate(
-        { username },
-        { university, courses, bio },
-        { new: true }
-      );
-      res.json(user);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal server error" });
-    }
-  }
-});
-
-router.get("/info", async (req, res) => {
-  console.log("we are here");
-  const username = req.session.user.username;
-  try {
-    const user = await User.findOne({ username });
+      cache.clearPattern('/users');
+      cache.clearPattern('/matches');
+    } catch (e) {}
     res.json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-router.get("/image/:username", async (req, res) => {
-  const username = req.params.username;
+router.get('/info', async (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
   try {
-    const user = await User.findOne({ username });
-    if (user.image && user.image.length > 0) {
-      let buffImg = user.image;
-      let base64 = buffImg.toString("base64");
-      let image = Buffer.from(base64, "base64");
-      res.writeHead(200, {
-        "Content-Type": "image/png",
-        "Content-Length": image.length,
-      });
-      res.end(image);
-    } else {
-      let image = Buffer.from(defaultAvatar, "base64");
-      res.writeHead(200, {
-        "Content-Type": "image/png",
-        "Content-Length": image.length,
-      });
-      res.end(image);
-    }
+    const username = req.session.user.username;
+    const user = await User.findOne({ username }).select('-password').lean();
+    res.json(user);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-//----------SINGLE matchedbuddy info --------------
-
-router.get("/matchedbuddyinfo", async (req, res) => {
-  const selfusername = req.session.user.username; //send the buddy's username through
-
-  console.log("=MATCHED BUDDY INFO ");
-  console.log(selfusername);
-  console.log("MATCHED BUDDY DONEEEEEE ");
-
+router.get('/image/:username', async (req, res) => {
   try {
-    const user = await User.find({ username: selfusername });
-    const viewbuddyusername = user[0].viewbuddy;
-    const buddyinformation = await User.find({ username: viewbuddyusername });
-    console.log("MATCHED  VIEW BUDDY of current user------");
-    console.log(buddyinformation);
-    console.log("MATCHED  VIEW BUDDY of current user DONEEE------");
+    const username = req.params.username;
+    const user = await User.findOne({ username }).select('image').lean();
 
-    res.json(buddyinformation);
-    // console.log("OK")
+    // Helper: detect basic image MIME types by header bytes (no extra dependency)
+    function detectMime(buf) {
+      if (!buf || buf.length < 4) return 'application/octet-stream';
+      // PNG: 89 50 4E 47
+      if (
+        buf[0] === 0x89 &&
+        buf[1] === 0x50 &&
+        buf[2] === 0x4e &&
+        buf[3] === 0x47
+      )
+        return 'image/png';
+      // JPEG: FF D8 FF
+      if (buf[0] === 0xff && buf[1] === 0xd8 && buf[2] === 0xff)
+        return 'image/jpeg';
+      // GIF: 47 49 46
+      if (buf[0] === 0x47 && buf[1] === 0x49 && buf[2] === 0x46)
+        return 'image/gif';
+      // WEBP (RIFF....WEBP)
+      if (
+        buf[0] === 0x52 &&
+        buf[1] === 0x49 &&
+        buf[2] === 0x46 &&
+        buf[3] === 0x46
+      ) {
+        const sub = buf.slice(8, 12).toString('ascii');
+        if (sub === 'WEBP') return 'image/webp';
+      }
+      return 'application/octet-stream';
+    }
+
+    // Normalize stored value to a Buffer (handles Buffer, base64 string, or Binary-like)
+    let imageBuffer = null;
+    if (user && user.image) {
+      const raw = user.image;
+      if (Buffer.isBuffer(raw)) imageBuffer = raw;
+      else if (typeof raw === 'string')
+        imageBuffer = Buffer.from(raw, 'base64');
+      else if (raw.buffer && Buffer.isBuffer(raw.buffer))
+        imageBuffer = Buffer.from(raw.buffer);
+      else imageBuffer = Buffer.from(raw);
+    } else {
+      imageBuffer = Buffer.from(defaultAvatar, 'base64');
+    }
+
+    const mime = detectMime(imageBuffer) || 'application/octet-stream';
+    // Serve with caching; let Express/compression handle headers safely
+    res.set('Cache-Control', 'public, max-age=604800');
+    res.set('Content-Type', mime);
+    // Use res.send(buffer) so Express sets Content-Length/Transfer-Encoding correctly
+    return res.status(200).send(imageBuffer);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.get('/matchedbuddyinfo', async (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
+  try {
+    const selfusername = req.session.user.username;
+    const user = await User.findOne({ username: selfusername }).lean();
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const viewbuddyusername = user.viewbuddy;
+    const buddyinformation = await User.findOne({ username: viewbuddyusername }).lean();
+    // Frontend expects an array (data[0]) — return an array for compatibility
+    if (!buddyinformation) return res.json([]);
+    res.json([buddyinformation]);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ error: "Internal Server Error when getting matchedbuddy info" });
+      .json({ error: 'Internal Server Error when getting matchedbuddy info' });
   }
 });
 
-router.post("/addsinglebuddy", async (req, res) => {
-  const buddyUsername = req.body.buddyname; //send the buddy's username through
-  console.log("KATIES adding single buddy ");
-  console.log(buddyUsername);
-  console.log("KATIES adding single buddy DONEEEEEE ");
-  const selfuser = req.session.user.username;
-
+router.post('/addsinglebuddy', async (req, res) => {
+  if (!req.session.user) return res.sendStatus(401);
   try {
-    const user = await User.findOne({ username: selfuser });
-    if (user) {
-      console.log(
-        "KATIES adding single buddy INFO own user actually foudn in db"
-      );
-      console.log(user);
-      console.log(buddyUsername);
-      console.log("KATIES adding single buddy own user actually foudn in db");
-      const filter = { username: selfuser };
-      const update = { viewbuddy: buddyUsername };
-      const options = { new: true };
-      const updatedUser = await User.findOneAndUpdate(filter, update, options);
-      console.log("returned::::::", updatedUser);
-      res.json(updatedUser);
-    } else {
-      console.log("User not found");
-      res.status(404).json({ error: "User not found" });
-    }
+    const buddyUsername = req.body.buddyname;
+    const selfuser = req.session.user.username;
+    const filter = { username: selfuser };
+    const update = { viewbuddy: buddyUsername };
+    const options = { new: true };
+    const updatedUser = await User.findOneAndUpdate(
+      filter,
+      update,
+      options
+    ).lean();
+    try {
+      cache.clearPattern('/matches');
+      cache.clearPattern('/users');
+    } catch (e) {}
+    res.json(updatedUser);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ error: "Internal Server Error when getting matchedbuddy info" });
+      .json({ error: 'Internal Server Error when adding single buddy' });
   }
 });
 
-//----------SINGLE matchedbuddy info --------------^^^^^
 module.exports = router;

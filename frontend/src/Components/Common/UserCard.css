@@ -1,10 +1,10 @@
 /* UserCard.css */
 .user-card {
-  border: none;
+  border: 1px solid var(--border);
   border-radius: 15px;
   transition: all 0.3s ease;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text);
   margin-bottom: 20px;
   overflow: hidden;
 }
@@ -15,8 +15,8 @@
 }
 
 .user-card .card-body {
-  background: rgba(255, 255, 255, 0.95);
-  color: #333;
+  background: var(--surface);
+  color: var(--text);
   border-radius: 15px;
   margin: 8px;
   padding: 20px;
@@ -32,7 +32,7 @@
   height: 60px;
   border-radius: 50%;
   border: 3px solid #fff;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.06);
   object-fit: cover;
 }
 
@@ -48,7 +48,7 @@
 .availability-dot {
   width: 12px;
   height: 12px;
-  background: #28a745;
+  background: var(--success);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
@@ -72,13 +72,13 @@
 
 .user-info .card-title {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text);
   font-size: 1.1rem;
 }
 
 .user-info .card-subtitle {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--muted);
 }
 
 .availability-badge {
@@ -87,14 +87,14 @@
 }
 
 .courses-section {
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--card-border);
   padding-top: 15px;
 }
 
 .courses-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #495057;
+  color: var(--text);
   margin-bottom: 8px;
 }
 
@@ -112,19 +112,19 @@
 }
 
 .bio-section {
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--border);
   padding-top: 15px;
 }
 
 .bio-text {
   font-size: 0.9rem;
   line-height: 1.4;
-  color: #6c757d;
+  color: var(--muted);
   margin: 0;
 }
 
 .card-actions {
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--card-border);
   padding-top: 15px;
 }
 
@@ -139,7 +139,7 @@
 }
 
 .card-actions .btn-outline-primary:hover {
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, var(--primary), var(--primary-600));
   border-color: transparent;
 }
 

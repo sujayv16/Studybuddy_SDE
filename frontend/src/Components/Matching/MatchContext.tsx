@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { User } from "../User";
 import { Chats } from "../Chats";
+import { getCache, setCache } from '../../utils/clientCache';
 // This file provides access to the MatchContext which stores information to be used across match components
 
 interface MatchContextType {
@@ -38,11 +39,18 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     };
 
     const updateCandidates = () => {
-        fetch('/matches/candidates')
+        const key = '/matches/candidates';
+        const cached = getCache(key);
+        if (cached) {
+            setCandidates(cached);
+            return;
+        }
+        fetch(key)
         .then((response) => {
             if (response.ok) {
                 response.json().then((data) => {
                     setCandidates(data);
+                    setCache(key, data, 5000);
                 })
             } else {
                 console.log(response.status);
@@ -52,11 +60,25 @@ const MatchContextProvider = ({ children }: MatchContextProviderProps) => {
     };
 
     const updateBuddies = () => {
-        fetch('/matches/buddies')
+        const key = '/matches/buddies';
+        const cached = getCache(key);
+        if (cached) {
+            setBuddies(cached);
+            return;
+        }
+        fetch(key)
         .then((response) => {
             if (response.ok) {
                 response.json().then((data) => {
-                    setBuddies(data);
+                    // endpoint may return a full array (legacy) or a paginated object { buddies, total, page, limit }
+                    let out: any[] = [];
+                    if (Array.isArray(data)) {
+                        out = data;
+                    } else if (data && data.buddies) {
+                        out = data.buddies;
+                    }
+                    setBuddies(out);
+                    setCache(key, out, 30000);
                 })
             } else {
                 console.log(response.status);

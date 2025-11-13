@@ -67,8 +67,8 @@ function SignupPage() {
         const filteredCourses = courses.filter(course => course !== "");
         const coursesArray = filteredCourses.map(course => course.trim());
         if (usernameError !== '') {
-            alert(usernameError)
-            return
+          // inline error shown to user; abort submit
+          return
         }
         if (coursesArray.length === 0) {
           alert("You must have at least one course");
@@ -122,7 +122,10 @@ function SignupPage() {
                 value={username}
                 onChange={handleUsernameChange}
                 required
-                minLength={3} />
+                minLength={3}
+                aria-describedby="usernameHelp"
+                aria-invalid={usernameError ? 'true' : 'false'} />
+            {usernameError && <div id="usernameHelp" className="form-text text-danger">{usernameError}</div>}
           </FormGroup>
           <FormGroup className='mb-3' controlId='formPassword'>
             <Form.Label>Password:</Form.Label>
@@ -171,7 +174,7 @@ function SignupPage() {
           </FormGroup>
 
           <div className="d-flex justify-content-evenly">
-            <Button variant='primary' type="submit">Submit</Button>
+            <Button variant='primary' type="submit" disabled={!!usernameError || !username || !password || !university || courses.length === 0}>Submit</Button>
           </div>
         </Form>
         </Col>

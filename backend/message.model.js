@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
@@ -8,10 +8,10 @@ var Schema = mongoose.Schema;
 // body: The chat the user has sent
 // sent: The date and time that the chat message was sent (useful for getting a chronological list of messages)
 var messageSchema = new Schema({
-    chatId: {type: String, required: true},
-    fromUser: {type: String, required: true},
-    body: {type: String, required: true},
-    sent: {type: Date, default: Date.now, required: true},
-})
+  chatId: { type: String, required: true },
+  fromUser: { type: String, required: true },
+  body: { type: String, required: true },
+  sent: { type: Date, default: Date.now, required: true },
+});
 
-module.exports = mongoose.model("message", messageSchema)
+module.exports = mongoose.model('message', messageSchema);

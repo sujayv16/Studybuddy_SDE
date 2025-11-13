@@ -6,13 +6,19 @@ mongoose.set('strictQuery', false);
 
 // Determine which MongoDB to use
 const useLocalMongo = process.env.LOCAL_MONGO === 'true';
-const mongoUrl = useLocalMongo ? process.env.MONGO_URL_LOCAL : process.env.MONGO_URL;
+const mongoUrl = useLocalMongo
+  ? process.env.MONGO_URL_LOCAL
+  : process.env.MONGO_URL;
 
 if (!mongoUrl) {
   throw new Error('MongoDB URL environment variable is not set');
 }
 
-console.log(`🔄 Attempting to connect to ${useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'}...`);
+console.log(
+  `🔄 Attempting to connect to ${
+    useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'
+  }...`
+);
 
 // Connection options based on environment
 const connectionOptions = {
@@ -39,11 +45,15 @@ const db = mongoose.connection;
 db.on('error', (error) => {
   console.error('❌ MongoDB connection error:', error.message);
   if (error.message.includes('IP')) {
-    console.log('💡 Tip: Make sure your IP address is whitelisted in MongoDB Atlas Network Access');
+    console.log(
+      '💡 Tip: Make sure your IP address is whitelisted in MongoDB Atlas Network Access'
+    );
   }
   if (error.message.includes('ECONNREFUSED') && useLocalMongo) {
     console.log('💡 Tip: Make sure MongoDB is running locally on port 27017');
-    console.log('   Install: https://www.mongodb.com/docs/manual/installation/');
+    console.log(
+      '   Install: https://www.mongodb.com/docs/manual/installation/'
+    );
     console.log('   Or try: mongod --dbpath ./data/db');
   }
 });
@@ -53,7 +63,11 @@ db.on('disconnected', () => {
 });
 
 db.once('open', () => {
-  console.log(`✅ Connected to ${useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'} successfully`);
+  console.log(
+    `✅ Connected to ${
+      useLocalMongo ? 'Local MongoDB' : 'MongoDB Atlas'
+    } successfully`
+  );
 });
 
 // Graceful shutdown

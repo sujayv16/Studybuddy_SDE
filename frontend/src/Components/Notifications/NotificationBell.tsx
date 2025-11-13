@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Dropdown, Badge } from 'react-bootstrap';
 import io from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 
 interface NotificationBellProps {
   username: string;
@@ -9,6 +10,7 @@ interface NotificationBellProps {
 const NotificationBell: React.FC<NotificationBellProps> = ({ username }) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [socket, setSocket] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const newSocket = io('/chat');
@@ -36,29 +38,30 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ username }) => {
     setNotifications([]);
   };
 
+  const openNotification = (notification: any) => {
+    if (notification.chatId && notification.chatId !== 'system') {
+      setNotifications([]);
+      navigate(`/chatroom/${notification.chatId}`);
+    }
+  };
   const unreadCount = notifications.length;
 
   return (
     <Dropdown align="end">
-      <Dropdown.Toggle variant="outline-light" id="notification-dropdown" style={{ position: 'relative' }}>
-        🔔
+      <Dropdown.Toggle variant="outline-secondary" id="notification-dropdown" className="notification-toggle" style={{ position: 'relative' }}>
+        <span aria-hidden>🔔</span>
         {unreadCount > 0 && (
           <Badge 
             bg="danger" 
             pill 
-            style={{ 
-              position: 'absolute', 
-              top: '-5px', 
-              right: '-5px',
-              fontSize: '0.75rem'
-            }}
+            className="notification-badge"
           >
             {unreadCount > 9 ? '9+' : unreadCount}
           </Badge>
         )}
       </Dropdown.Toggle>
 
-      <Dropdown.Menu style={{ minWidth: '300px', maxHeight: '400px', overflowY: 'auto' }}>
+      <Dropdown.Menu className="notification-menu" style={{ minWidth: '300px', maxHeight: '60vh', overflowY: 'auto' }}>
         <Dropdown.Header className="d-flex justify-content-between">
           <span>Notifications</span>
           {unreadCount > 0 && (
@@ -69,20 +72,23 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ username }) => {
         </Dropdown.Header>
         
         {notifications.length === 0 ? (
-          <Dropdown.ItemText>No new notifications</Dropdown.ItemText>
+          <Dropdown.ItemText className="px-3 py-3 text-muted">No new notifications</Dropdown.ItemText>
         ) : (
           notifications.map((notification, index) => (
-            <Dropdown.Item key={index} className="border-bottom">
-              <div className="d-flex justify-content-between">
-                <small className="text-muted">
-                  {notification.type === 'message' ? '💬' : '📢'} {notification.from}
-                </small>
-                <small className="text-muted">
+            <Dropdown.Item key={index} className="notification-item" onClick={() => openNotification(notification)}>
+              <div className="d-flex justify-content-between align-items-start">
+                <div>
+                  <small className="text-muted d-block">
+                    {notification.type === 'message' ? '💬' : '📢'} {notification.from}
+                  </small>
+                  <div className="notification-body" style={{ fontSize: '0.95rem' }}>
+                    {notification.chatTitle ? (<strong>{notification.chatTitle}</strong>) : null}
+                    <div>{notification.body}</div>
+                  </div>
+                </div>
+                <small className="text-muted ms-3 d-none d-sm-block" style={{ whiteSpace: 'nowrap' }}>
                   {new Date(notification.timestamp).toLocaleTimeString()}
                 </small>
-              </div>
-              <div style={{ fontSize: '0.9rem' }}>
-                {notification.body}
               </div>
             </Dropdown.Item>
           ))

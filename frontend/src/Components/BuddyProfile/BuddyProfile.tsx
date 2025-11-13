@@ -7,6 +7,7 @@ import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { FaArrowCircleRight } from 'react-icons/fa';
 import RootNavbar from "../Root/RootNavbar";
+import LoadingSpinner from "../Common/LoadingSpinner";
 
 
 const BuddyProfile = () => {
@@ -30,20 +31,25 @@ const BuddyProfile = () => {
             //PUT THE BUDDY INTO THE USERS BUDDY SCHEMA!! done when button clicked
         //now i need to get the buddy's schema
         const singlebuddy = await fetch('/users/matchedbuddyinfo')
-        const data = await singlebuddy.json()
-        setbuddyCourses(data[0].courses);
-        setbuddyUniversity(data[0].university);
-        setBuddyprofile(location.state.buddyusername);
-        setbuddyBio(data[0].bio);
-        setbuddyReview(data[0].reviews); 
-        setImage('/users/image/' + location.state.buddyusername); 
+        const data = await singlebuddy.json();
+        const b = data && data[0];
+        setbuddyCourses(b?.courses || []);
+        setbuddyUniversity(b?.university || '');
+        setBuddyprofile(location.state?.buddyusername || '');
+        setbuddyBio(b?.bio || '');
+        setbuddyReview(b?.reviews || []);
+        setImage('/users/image/' + (location.state?.buddyusername || ''));
       }
       fetchdata();
     }
   }, []);
   
   if(!buddyprofile){
-    return <p>Loading...</p>;
+    return (
+      <div className='d-flex justify-content-center align-items-center my-auto vh-50'>
+        <LoadingSpinner size={64} label="Loading profile" />
+      </div>
+    );
   }
 
   return (
@@ -59,7 +65,7 @@ const BuddyProfile = () => {
                 <div className="profile-header">
                     {image && (
                       <div className="profile-image-large">
-                        <img src={image} alt="Profile" />
+                        <img src={image} alt={`${buddyprofile} profile`} data-alt={`${buddyprofile} - ${buddyUniversity}`} onError={(e:any)=>{e.currentTarget.onerror=null; e.currentTarget.src='/logo192.png'}} />
                       </div>
                     )}
                     <div className="profile-info">

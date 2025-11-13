@@ -65,6 +65,25 @@ async function startServer() {
 // Start the server
 startServer();
 
+// Graceful shutdown: close server, mongo connection and redis if available
+async function shutdown(signal) {
+  console.log(`\nReceived ${signal}. Shutting down gracefully...`);
+  try {
+    server.close(() => console.log('HTTP server closed'));
+    // close mongoose
+    try { const mongoose = require('mongoose'); await mongoose.connection.close(false); console.log('MongoDB connection closed'); } catch (e) { console.warn('Error closing MongoDB', e && e.message); }
+    // close redis if available
+    try { const rc = require('../utils/redisClient'); const redis = rc.getClient(); if (redis) { await redis.quit(); console.log('Redis connection closed'); } } catch (e) { /* ignore */ }
+    process.exit(0);
+  } catch (err) {
+    console.error('Error during shutdown', err && err.message);
+    process.exit(1);
+  }
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
+
 /**
  * Normalize a port into a number, string, or false.
  */

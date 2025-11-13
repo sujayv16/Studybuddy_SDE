@@ -34,7 +34,11 @@ const UserCard: React.FC<UserCardProps> = ({
             <img
               src={`/users/image/${user.username}`}
               alt={`${user.username}'s profile`}
+              data-alt={`${user.username} - ${user.university}`}
               className="profile-image"
+              loading="lazy"
+              onError={(e: any) => { e.currentTarget.onerror = null; e.currentTarget.src = '/logo192.png'; }}
+              title={`View ${user.username}'s profile`}
             />
             {user.available && (
               <div className="availability-indicator">
@@ -88,11 +92,12 @@ const UserCard: React.FC<UserCardProps> = ({
           <div className="card-actions mt-auto">
             <Row>
               <Col>
-                <Link 
-                  to="/buddyprofile" 
+                <Link
+                  to="/buddyprofile"
                   state={{ buddyusername: user.username }}
                   className="btn btn-outline-primary btn-sm w-100"
                   onClick={onViewProfile}
+                  aria-label={`View profile of ${user.username}`}
                 >
                   View Profile
                 </Link>

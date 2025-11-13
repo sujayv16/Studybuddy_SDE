@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
@@ -17,7 +17,7 @@ var userSchema = new Schema({
   location: {
     type: {
       type: String,
-      enum: ["Point"],
+      enum: ['Point'],
       required: false,
     },
     coordinates: {
@@ -35,26 +35,51 @@ var userSchema = new Schema({
     thursday: [{ type: String }],
     friday: [{ type: String }],
     saturday: [{ type: String }],
-    sunday: [{ type: String }]
+    sunday: [{ type: String }],
   },
   preferences: {
     studySessionDuration: { type: Number, default: 120 }, // minutes
     preferredStudyTimes: [{ type: String }], // ["morning", "afternoon", "evening", "night"]
-    studyStyle: { type: String, enum: ["group", "one-on-one", "both"], default: "both" },
-    location: { type: String, enum: ["library", "dorm", "cafe", "online", "anywhere"], default: "anywhere" }
+    studyStyle: {
+      type: String,
+      enum: ['group', 'one-on-one', 'both'],
+      default: 'both',
+    },
+    location: {
+      type: String,
+      enum: ['library', 'dorm', 'cafe', 'online', 'anywhere'],
+      default: 'anywhere',
+    },
   },
-  studySessions: [{
-    sessionId: { type: String },
-    courseId: { type: String },
-    participants: [{ type: String }], // usernames
-    scheduledTime: { type: Date },
-    duration: { type: Number }, // minutes
-    location: { type: String },
-    status: { type: String, enum: ["scheduled", "ongoing", "completed", "cancelled"], default: "scheduled" },
-    createdAt: { type: Date, default: Date.now }
-  }],
+  studySessions: [
+    {
+      sessionId: { type: String },
+      courseId: { type: String },
+      participants: [{ type: String }], // usernames
+      scheduledTime: { type: Date },
+      duration: { type: Number }, // minutes
+      location: { type: String },
+      status: {
+        type: String,
+        enum: ['scheduled', 'ongoing', 'completed', 'cancelled'],
+        default: 'scheduled',
+      },
+      createdAt: { type: Date, default: Date.now },
+    },
+  ],
 
   //matchedbuddies: [{ type: [Schema.Types.ObjectId], ref: 'User',required: false }]//reference to other users
 });
 
-module.exports = mongoose.model("user", userSchema);
+// Indexes: text index for searchable fields and 2dsphere for geolocation
+userSchema.index({
+  username: 'text',
+  bio: 'text',
+  courses: 'text',
+  university: 'text',
+});
+userSchema.index({ location: '2dsphere' });
+userSchema.index({ university: 1 });
+userSchema.index({ username: 1 }, { unique: true });
+
+module.exports = mongoose.model('user', userSchema);

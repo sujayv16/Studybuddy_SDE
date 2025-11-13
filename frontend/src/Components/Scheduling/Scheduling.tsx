@@ -97,11 +97,17 @@ const Scheduling: React.FC = () => {
         setAvailability(groupedAvailability);
       }
 
-      // Fetch buddies
-      const buddiesRes = await fetch('/matches/buddies');
+      // Fetch full buddies list for invite chooser (use fetchAll to request full array)
+      const buddiesRes = await fetch('/matches/buddies?fetchAll=true');
       if (buddiesRes.ok) {
         const buddiesData = await buddiesRes.json();
-        setBuddies(buddiesData);
+        if (Array.isArray(buddiesData)) {
+          setBuddies(buddiesData);
+        } else if (buddiesData && buddiesData.buddies) {
+          setBuddies(buddiesData.buddies);
+        } else {
+          setBuddies([]);
+        }
       }
 
       // Fetch user info for courses
@@ -350,7 +356,7 @@ const Scheduling: React.FC = () => {
                   ))
                 ) : (
                   <div className="text-center py-5">
-                    <i className="bi bi-calendar-plus" style={{ fontSize: '3rem', color: '#6c757d' }}></i>
+                    <i className="bi bi-calendar-plus" style={{ fontSize: '3rem', color: 'var(--muted)' }}></i>
                     <h5 className="text-muted mt-3">No study sessions scheduled</h5>
                     <p className="text-muted">Create your first study session to get started!</p>
                   </div>
