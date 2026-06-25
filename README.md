@@ -1,8 +1,9 @@
 # StudyBuddy (Full‑Stack) — System Overview, Architecture, and Runbook
 
+Demo: https://youtu.be/LlpJbpVrnr0
+
 Connect university students with the right study partners, schedule meetups, and chat in real‑time. This monorepo contains a React SPA frontend and an Express/Socket.IO backend with MongoDB persistence.
 
-Repository: https://github.com/sujayv16/Studybuddy_SDE
 
 ## 🔭 System Overview
 
