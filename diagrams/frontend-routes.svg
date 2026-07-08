@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 20px system-ui; fill: #0b1220; }
+      .subtitle { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .muted { font: 12px system-ui; fill: #6b7280; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="780"/>
+  <text class="title" x="40" y="56">Frontend Routes (React Router)</text>
+
+  <rect class="card" x="60" y="90" width="340" height="120"/>
+  <text class="subtitle" x="80" y="120">Login</text>
+  <text class="muted" x="80" y="145">/login</text>
+  <text class="text" x="80" y="170">LoginPage</text>
+
+  <rect class="card" x="440" y="90" width="340" height="120"/>
+  <text class="subtitle" x="460" y="120">Signup</text>
+  <text class="muted" x="460" y="145">/signup</text>
+  <text class="text" x="460" y="170">SignupPage</text>
+
+  <rect class="card" x="820" y="90" width="360" height="120"/>
+  <text class="subtitle" x="840" y="120">Welcome</text>
+  <text class="muted" x="840" y="145">/welcome</text>
+  <text class="text" x="840" y="170">RootPage</text>
+
+  <rect class="card" x="60" y="250" width="340" height="120"/>
+  <text class="subtitle" x="80" y="280">Edit Profile</text>
+  <text class="muted" x="80" y="305">/profile</text>
+  <text class="text" x="80" y="330">EditProfile</text>
+
+  <rect class="card" x="440" y="250" width="340" height="120"/>
+  <text class="subtitle" x="460" y="280">Buddy Profile</text>
+  <text class="muted" x="460" y="305">/buddyprofile</text>
+  <text class="text" x="460" y="330">BuddyProfile</text>
+
+  <rect class="card" x="820" y="250" width="360" height="160"/>
+  <text class="subtitle" x="840" y="280">Chats</text>
+  <text class="muted" x="840" y="305">/chats, /create-chat</text>
+  <text class="muted" x="840" y="325">/chatroom/:id, /add-users/:id</text>
+  <text class="text" x="840" y="350">ChatList, CreateChat, Chatroom, AddUsers</text>
+
+  <rect class="card" x="60" y="430" width="340" height="120"/>
+  <text class="subtitle" x="80" y="460">Scheduling</text>
+  <text class="muted" x="80" y="485">/scheduling</text>
+  <text class="text" x="80" y="510">Scheduling, WeeklyAvailability</text>
+
+  <rect class="card" x="440" y="430" width="340" height="120"/>
+  <text class="subtitle" x="460" y="460">Matching</text>
+  <text class="text" x="460" y="485">BuddiesList, MatchUsersList</text>
+
+  <rect class="card" x="820" y="430" width="360" height="120"/>
+  <text class="subtitle" x="840" y="460">Global Layout</text>
+  <text class="text" x="840" y="485">RootNavbar, Notifications, QuickSetup</text>
+
+  <path class="edge" d="M230,210 C230,230 230,250 230,250"/>
+  <path class="edge" d="M610,210 C610,230 610,250 610,250"/>
+  <path class="edge" d="M1000,210 C1000,230 1000,250 1000,250"/>
+  <path class="edge" d="M230,370 C230,390 230,430 230,430"/>
+  <path class="edge" d="M610,370 C610,390 610,430 610,430"/>
+  <path class="edge" d="M1000,410 C1000,420 1000,430 1000,430"/>
+</svg>

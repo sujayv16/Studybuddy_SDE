@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 22px system-ui; fill: #0b1220; }
+      .subtitle { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .edge2 { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" width="1280" height="760"/>
+  <text class="title" x="40" y="56">Client–Server SPA Pattern</text>
+
+  <!-- Browser SPA -->
+  <rect class="card" x="60" y="120" width="380" height="500"/>
+  <text class="subtitle" x="80" y="150">Browser (React SPA)</text>
+  <text class="text" x="80" y="180">- Routes: Login, Signup, Matches, Chats, Profile, Scheduling</text>
+  <text class="text" x="80" y="205">- REST via fetch/Axios</text>
+  <text class="text" x="80" y="230">- Socket.IO client</text>
+  <text class="text" x="80" y="255">- Theme: light blue</text>
+
+  <!-- Backend API -->
+  <rect class="card" x="520" y="120" width="360" height="220"/>
+  <text class="subtitle" x="540" y="150">Backend API (Express)</text>
+  <text class="text" x="540" y="180">- Routes: /users, /match, /chat, /scheduling</text>
+  <text class="text" x="540" y="205">- Middlewares: helmet, cors, session, requestId</text>
+  <text class="text" x="540" y="230">- Observability: /healthz, /readyz, /status, /metrics</text>
+
+  <!-- Socket -->
+  <rect class="card" x="520" y="370" width="360" height="120"/>
+  <text class="subtitle" x="540" y="400">Socket.IO (Real‑time)</text>
+  <text class="text" x="540" y="430">- Chat and meet-up events</text>
+
+  <!-- Database -->
+  <rect class="card" x="920" y="120" width="260" height="220"/>
+  <text class="subtitle" x="940" y="150">MongoDB</text>
+  <text class="text" x="940" y="180">- Collections: users, chatrooms, messages</text>
+  <text class="text" x="940" y="205">- matchings, schedulings</text>
+
+  <!-- Metrics -->
+  <rect class="card" x="920" y="370" width="260" height="120"/>
+  <text class="subtitle" x="940" y="400">Metrics (Prometheus)</text>
+  <text class="text" x="940" y="430">- http_request_duration_seconds</text>
+
+  <!-- Edges -->
+  <path class="edge" d="M440,220 C480,220 520,220 520,220"/>
+  <text class="text" x="450" y="205">HTTPS (REST)</text>
+
+  <path class="edge2" d="M440,430 C480,430 520,430 520,430"/>
+  <text class="text" x="450" y="415">WebSocket</text>
+
+  <path class="edge" d="M880,210 C900,210 920,210 920,210"/>
+  <text class="text" x="890" y="195">Mongoose</text>
+
+  <path class="edge2" d="M880,430 C900,430 920,430 920,430"/>
+  <text class="text" x="885" y="415">/metrics scrape</text>
+</svg>

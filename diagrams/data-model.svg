@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 20px system-ui; fill: #0b1220; }
+      .subtitle { font: 600 16px system-ui; fill: #2563eb; }
+      .text { font: 14px system-ui; fill: #0b1220; }
+      .muted { font: 12px system-ui; fill: #6b7280; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .edge2 { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="780"/>
+  <text class="title" x="40" y="56">Data Model (Mongoose)</text>
+
+  <!-- User -->
+  <rect class="card" x="60" y="120" width="280" height="200"/>
+  <text class="subtitle" x="80" y="150">User</text>
+  <text class="text" x="80" y="180">username, password, university</text>
+  <text class="text" x="80" y="205">bio, courses[], image</text>
+  <text class="text" x="80" y="230">available, location(Point)</text>
+
+  <!-- Chatroom -->
+  <rect class="card" x="420" y="100" width="300" height="180"/>
+  <text class="subtitle" x="440" y="130">Chatroom</text>
+  <text class="text" x="440" y="160">participants: [User]</text>
+  <text class="text" x="440" y="185">lastMessage, name</text>
+
+  <!-- Message -->
+  <rect class="card" x="420" y="320" width="300" height="180"/>
+  <text class="subtitle" x="440" y="350">Message</text>
+  <text class="text" x="440" y="380">chatroom: Chatroom</text>
+  <text class="text" x="440" y="405">sender: User</text>
+  <text class="text" x="440" y="430">content, createdAt</text>
+
+  <!-- Match -->
+  <rect class="card" x="780" y="120" width="300" height="160"/>
+  <text class="subtitle" x="800" y="150">Match</text>
+  <text class="text" x="800" y="180">user: User</text>
+  <text class="text" x="800" y="205">matchedUsers: [User]</text>
+
+  <!-- Scheduling -->
+  <rect class="card" x="780" y="320" width="300" height="180"/>
+  <text class="subtitle" x="800" y="350">Scheduling</text>
+  <text class="text" x="800" y="380">user: User</text>
+  <text class="text" x="800" y="405">availability: weekly slots</text>
+
+  <!-- Relations -->
+  <path class="edge" d="M340,200 C380,200 420,190 420,190"/>
+  <path class="edge" d="M340,260 C380,260 420,350 420,350"/>
+  <path class="edge2" d="M720,180 C750,180 780,180 780,180"/>
+  <path class="edge2" d="M720,360 C750,360 780,360 780,360"/>
+
+  <text class="muted" x="380" y="190">User → Chatroom (participants)</text>
+  <text class="muted" x="380" y="360">User → Message (sender)</text>
+  <text class="muted" x="760" y="175">User ↔ Match</text>
+  <text class="muted" x="760" y="355">User ↔ Scheduling</text>
+</svg>

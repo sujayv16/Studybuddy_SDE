@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg { fill: #eaf2ff; }
+      .card { fill: #ffffff; stroke: #dbe7ff; stroke-width: 2; rx: 12; }
+      .title { font: 700 20px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #0b1220; }
+      .subtitle { font: 600 14px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #2563eb; }
+      .text { font: 14px system-ui, -apple-system, Segoe UI, Roboto, Arial; fill: #0b1220; }
+      .muted { fill: #6b7280; font: 12px system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      .edge { stroke: #2563eb; stroke-width: 2.5; marker-end: url(#arrow); fill: none; }
+      .edge2 { stroke: #0ea5e9; stroke-width: 2; marker-end: url(#arrow2); fill: none; stroke-dasharray: 6 6; }
+      .pill { fill: #e0ecff; stroke: #c7dcff; stroke-width: 1.5; rx: 999; }
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#2563eb" />
+    </marker>
+    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="10" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#0ea5e9" />
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1280" height="720"/>
+  <text class="title" x="40" y="56">StuddyBuddy • System Overview (Client–Server + SPA + Realtime)</text>
+
+  <!-- Client SPA -->
+  <rect class="card" x="60" y="100" width="420" height="220"/>
+  <text class="subtitle" x="80" y="130">Client (SPA)</text>
+  <text class="text" x="80" y="160">• React + React Router</text>
+  <text class="text" x="80" y="185">• Bootstrap UI (+ theme)</text>
+  <text class="text" x="80" y="210">• Fetch REST API</text>
+  <text class="text" x="80" y="235">• Socket.IO client (chat, notifications)</text>
+
+  <!-- Server API -->
+  <rect class="card" x="520" y="100" width="320" height="280"/>
+  <text class="subtitle" x="540" y="130">Server (Express API)</text>
+  <text class="text" x="540" y="160">• Routes: /users, /matches, /chats, /scheduling</text>
+  <text class="text" x="540" y="185">• Sessions (Mongo store)</text>
+  <text class="text" x="540" y="210">• Security: bcrypt, helmet, cors</text>
+  <text class="text" x="540" y="235">• Observability: /healthz, /readyz, /status</text>
+  <text class="text" x="540" y="260">• Metrics: /metrics (Prometheus)</text>
+
+  <!-- Socket.IO -->
+  <rect class="card" x="520" y="400" width="320" height="150"/>
+  <text class="subtitle" x="540" y="430">Realtime (Socket.IO)</text>
+  <text class="text" x="540" y="460">• Namespaces: /chat</text>
+  <text class="text" x="540" y="485">• Events: message, notify</text>
+
+  <!-- MongoDB -->
+  <rect class="card" x="880" y="180" width="320" height="220"/>
+  <text class="subtitle" x="900" y="210">MongoDB (Mongoose)</text>
+  <text class="text" x="900" y="240">• Models: User, Chatroom, Message</text>
+  <text class="text" x="900" y="265">• Models: Match, Scheduling</text>
+  <text class="text" x="900" y="290">• Sessions (connect-mongo)</text>
+
+  <!-- Edges -->
+  <path class="edge" d="M480,210 C510,210 520,210 520,210"/>
+  <path class="edge2" d="M480,240 C520,300 520,400 520,400"/>
+  <path class="edge" d="M840,240 C880,240 880,240 880,240"/>
+  
+  <!-- Pills -->
+  <rect class="pill" x="60" y="340" width="420" height="40"/>
+  <text class="muted" x="80" y="365">SPA served statically by Express (build/)</text>
+  <rect class="pill" x="60" y="390" width="420" height="40"/>
+  <text class="muted" x="80" y="415">Proxy to backend at http://localhost:8080</text>
+</svg>
